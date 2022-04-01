@@ -1,0 +1,75 @@
+version: "3"
+
+services:
+  namenode:
+    image: hadoop-namenode:latest
+    container_name: namenode
+    restart: always
+    ports:
+      - 50070:50070
+      - 9000:9000
+    volumes:
+      - hadoop_namenode:/dfs/name
+    environment:
+      - CLUSTER_NAME=storage
+    env_file:
+      - ./hadoop.env
+
+  datanode:
+    image: hadoop-datanode:latest
+    container_name: datanode
+    restart: always
+    ports:
+      - 50075:50075 # Download file from UI
+    volumes:
+      - hadoop_datanode:/dfs/data
+    environment:
+      SERVICE_PRECONDITION: "namenode:50070"
+    env_file:
+      - ./hadoop.env
+    depends_on:
+      - namenode
+
+  resourcemanager:
+    image: hadoop-resourcemanager:latest
+    container_name: resourcemanager
+    restart: always
+    ports:
+      - 8088:8088
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075"
+    env_file:
+      - ./hadoop.env
+    depends_on:
+      - namenode
+      - datanode
+
+  nodemanager:
+    image: hadoop-nodemanager:latest
+    container_name: nodemanager
+    restart: always
+    ports:
+      - 8042:8042
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075 resourcemanager:8088"
+    env_file:
+      - ./hadoop.env
+    depends_on:
+      - resourcemanager
+
+  historyserver:
+    image: hadoop-historyserver:latest
+    container_name: historyserver
+    restart: always
+    ports:
+      - 19888:19888
+    environment:
+      SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075 resourcemanager:8088"
+    env_file:
+      - ./hadoop.env
+    depends_on:
+      - resourcemanager
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode:
