@@ -1,23 +1,10 @@
-FROM library/ubuntu:18.04
-
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    openjdk-8-jdk \
-    net-tools \
-    curl \
-    netcat \
-    gnupg \
-    libsnappy-dev \
-    nano \
-    vim \
-    && rm -rf /var/lib/apt/lists/*
-
-ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/ \
-    HADOOP_VERSION=2.7.7
+FROM java-base:latest
 
 RUN curl -o /tmp/hadoop-keys https://dist.apache.org/repos/dist/release/hadoop/common/KEYS \
     && gpg --import /tmp/hadoop-keys \
     && rm /tmp/hadoop-keys
 
+ENV HADOOP_VERSION=2.7.7
 ENV HADOOP_URL https://archive.apache.org/dist/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz
 RUN set -x \
     && mkdir /tmp/src \

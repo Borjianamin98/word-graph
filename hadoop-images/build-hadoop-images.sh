@@ -1,6 +1,8 @@
-setlocal
-cd /d %~dp0
+#!/bin/bash
 
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+
+cd "${SCRIPT_DIR}" || exit 1
 docker build --tag hadoop-base --file base/Dockerfile base
 docker build --tag hadoop-namenode --file namenode/Dockerfile namenode
 docker build --tag hadoop-datanode --file datanode/Dockerfile datanode

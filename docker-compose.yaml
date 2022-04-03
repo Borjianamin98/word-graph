@@ -4,6 +4,7 @@ services:
   namenode:
     image: hadoop-namenode:latest
     container_name: namenode
+    hostname: namenode
     restart: always
     ports:
       - 50070:50070
@@ -18,6 +19,7 @@ services:
   datanode:
     image: hadoop-datanode:latest
     container_name: datanode
+    hostname: datanode
     restart: always
     ports:
       - 50075:50075 # Download file from UI
@@ -30,45 +32,68 @@ services:
     depends_on:
       - namenode
 
-  resourcemanager:
-    image: hadoop-resourcemanager:latest
-    container_name: resourcemanager
-    restart: always
-    ports:
-      - 8088:8088
-    environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075"
-    env_file:
-      - ./hadoop.env
-    depends_on:
-      - namenode
-      - datanode
+  # resourcemanager:
+  #   image: hadoop-resourcemanager:latest
+  #   container_name: resourcemanager
+  #   hostname: resourcemanager
+  #   restart: always
+  #   ports:
+  #     - 8088:8088
+  #   environment:
+  #     SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075"
+  #   env_file:
+  #     - ./hadoop.env
+  #   depends_on:
+  #     - namenode
+  #     - datanode
 
-  nodemanager:
-    image: hadoop-nodemanager:latest
-    container_name: nodemanager
-    restart: always
-    ports:
-      - 8042:8042
-    environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075 resourcemanager:8088"
-    env_file:
-      - ./hadoop.env
-    depends_on:
-      - resourcemanager
+  # nodemanager:
+  #   image: hadoop-nodemanager:latest
+  #   container_name: nodemanager
+  #   hostname: nodemanager
+  #   restart: always
+  #   ports:
+  #     - 8042:8042
+  #   environment:
+  #     SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075 resourcemanager:8088"
+  #   env_file:
+  #     - ./hadoop.env
+  #   depends_on:
+  #     - resourcemanager
 
-  historyserver:
-    image: hadoop-historyserver:latest
-    container_name: historyserver
+  # historyserver:
+  #   image: hadoop-historyserver:latest
+  #   container_name: historyserver
+  #   hostname: historyserver
+  #   restart: always
+  #   ports:
+  #     - 19888:19888
+  #   environment:
+  #     SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075 resourcemanager:8088"
+  #   env_file:
+  #     - ./hadoop.env
+  #   depends_on:
+  #     - resourcemanager
+
+  spark-master:
+    image: spark-master:latest
+    container_name: spark-master
+    hostname: spark-master
     restart: always
     ports:
-      - 19888:19888
-    environment:
-      SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075 resourcemanager:8088"
-    env_file:
-      - ./hadoop.env
+      - "8080:8080"
+      - "7077:7077"
+
+  spark-worker-1:
+    image: spark-worker:latest
+    container_name: spark-worker-1
+    hostname: spark-worker-1
     depends_on:
-      - resourcemanager
+      - spark-master
+    ports:
+      - "8081:8081"
+    environment:
+      SPARK_MASTERS: spark://spark-master:7077
 
 volumes:
   hadoop_namenode:
