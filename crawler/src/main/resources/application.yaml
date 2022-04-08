@@ -3,3 +3,4 @@ app:
   kafka-configs:
     bootstrap-servers: localhost:9093
     kafka-consumer-group: test
+    links-topic-name: links

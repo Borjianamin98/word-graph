@@ -122,7 +122,7 @@ services:
       - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://0.0.0.0:9093
       - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
       - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
-      # Custom configurtions
+      # Custom configurations
       - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
     depends_on:
       - zookeeper
@@ -136,7 +136,7 @@ services:
       - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./postgresql-configs/init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+      - ./postgresql-init.sql:/docker-entrypoint-initdb.d/create_tables.sql
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password

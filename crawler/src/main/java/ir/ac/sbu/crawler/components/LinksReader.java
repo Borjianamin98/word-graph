@@ -2,12 +2,16 @@ package ir.ac.sbu.crawler.components;
 
 import ir.ac.sbu.crawler.config.ApplicationConfigs;
 import ir.ac.sbu.crawler.config.ApplicationConfigs.KafkaConfigs;
-import java.util.Properties;
+import java.time.Duration;
+import java.util.Collections;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import javax.annotation.PreDestroy;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -17,40 +21,45 @@ public class LinksReader {
 
     private static final Logger logger = LoggerFactory.getLogger(LinksReader.class);
 
+    private final KafkaConfigs kafkaConfigs;
     private final KafkaConsumer<String, String> kafkaConsumer;
+    private final BlockingQueue<String> linksQueue;
     private final Thread linkReader;
 
     private volatile boolean running = false;
 
-    public LinksReader(ApplicationConfigs applicationConfigs, InMemoryLinks inMemoryLinks) {
-        // initializing Kafka consumer
-        KafkaConfigs applicationKafkaConfigs = applicationConfigs.getKafkaConfigs();
-        Properties kafkaConsumerConfig = new Properties();
-        kafkaConsumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
-        kafkaConsumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, applicationKafkaConfigs.getBootstrapServers());
-        kafkaConsumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        kafkaConsumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        kafkaConsumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, applicationKafkaConfigs.getKafkaConsumerGroup());
-        kafkaConsumer = new KafkaConsumer<>(kafkaConsumerConfig);
+    public LinksReader(ApplicationConfigs applicationConfigs) {
+        this.linksQueue = new ArrayBlockingQueue<>(applicationConfigs.getInMemoryLinkQueueSize());
+        this.kafkaConfigs = applicationConfigs.getKafkaConfigs();
 
-        BlockingQueue<String> linksQueue = inMemoryLinks.getLinksQueue();
+        kafkaConsumer = new KafkaConsumer<>(kafkaConfigs.getConsumerProperties());
+        kafkaConsumer.subscribe(Collections.singletonList(kafkaConfigs.getLinksTopicName()));
 
+        running = true;
         this.linkReader = new Thread(() -> {
-            running = true;
             while (running) {
                 try {
-                    linksQueue.put("1");
-                    logger.info("Put another record ...");
-                    Thread.sleep(1_000);
-                } catch (InterruptedException e) {
+                    // Polls at most 500 links from Kafka topic
+                    ConsumerRecords<String, String> linkRecords = kafkaConsumer.poll(Duration.ofMinutes(5));
+                    for (ConsumerRecord<String, String> linkRecord : linkRecords) {
+                        String link = linkRecord.value();
+                        logger.info("Putting '{}' link in in-memory queue ...", link);
+                        linksQueue.put(link);
+                    }
+                    kafkaConsumer.commitSync();
+                } catch (InterruptedException | org.apache.kafka.common.errors.InterruptException e) {
                     if (running) {
-                        throw new AssertionError("Unexpected interrupt", e);
+                        throw new AssertionError("Unexpected interrupt while polling links", e);
                     }
                     Thread.currentThread().interrupt();
                 }
             }
         }, "Link Reader");
         this.linkReader.start();
+    }
+
+    public String getNextLink() throws InterruptedException {
+        return linksQueue.take();
     }
 
     @PreDestroy
@@ -65,7 +74,18 @@ public class LinksReader {
             throw new AssertionError("Unexpected interrupt while waiting for link reader closing");
         }
         kafkaConsumer.close();
+        restoreInMemoryLinks();
         logger.info("Links reader stopped successfully");
+    }
+
+    private void restoreInMemoryLinks() {
+        logger.info("Restore in-memory links to Kafka topic: count = {}", linksQueue.size());
+        try (KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(kafkaConfigs.getProducerProperties())) {
+            for (String link : linksQueue) {
+                kafkaProducer.send(new ProducerRecord<>(kafkaConfigs.getLinksTopicName(), link));
+            }
+        }
+        logger.info("In-memory links restored successfully");
     }
 
 }
