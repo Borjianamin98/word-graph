@@ -4,3 +4,6 @@ app:
     bootstrap-servers: localhost:9093
     kafka-consumer-group: test
     links-topic-name: links
+  crawler-configs:
+    politeness-duration-in-seconds: 60
+    max-in-memory-politeness-records: 10000

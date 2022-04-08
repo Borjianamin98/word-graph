@@ -10,5 +10,5 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <name>general</name>
+    <artifactId>general</artifactId>
 </project>

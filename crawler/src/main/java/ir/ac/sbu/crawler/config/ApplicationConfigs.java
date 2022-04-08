@@ -16,6 +16,7 @@ public class ApplicationConfigs {
 
     private int inMemoryLinkQueueSize;
     private final KafkaConfigs kafkaConfigs = new KafkaConfigs();
+    private final CrawlerConfigs crawlerConfigs = new CrawlerConfigs();
 
     public int getInMemoryLinkQueueSize() {
         return inMemoryLinkQueueSize;
@@ -27,6 +28,10 @@ public class ApplicationConfigs {
 
     public KafkaConfigs getKafkaConfigs() {
         return kafkaConfigs;
+    }
+
+    public CrawlerConfigs getCrawlerConfigs() {
+        return crawlerConfigs;
     }
 
     public static class KafkaConfigs {
@@ -75,6 +80,28 @@ public class ApplicationConfigs {
             kafkaProducerConfigs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
             kafkaProducerConfigs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
             return kafkaProducerConfigs;
+        }
+    }
+
+    public static class CrawlerConfigs {
+
+        private int politenessDurationInSeconds;
+        private int maxInMemoryPolitenessRecords;
+
+        public int getPolitenessDurationInSeconds() {
+            return politenessDurationInSeconds;
+        }
+
+        public void setPolitenessDurationInSeconds(int politenessDurationInSeconds) {
+            this.politenessDurationInSeconds = politenessDurationInSeconds;
+        }
+
+        public int getMaxInMemoryPolitenessRecords() {
+            return maxInMemoryPolitenessRecords;
+        }
+
+        public void setMaxInMemoryPolitenessRecords(int maxInMemoryPolitenessRecords) {
+            this.maxInMemoryPolitenessRecords = maxInMemoryPolitenessRecords;
         }
     }
 }
