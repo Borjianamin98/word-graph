@@ -1,0 +1,5 @@
+app:
+  in-memory-link-queue-size: 100
+  kafka-configs:
+    bootstrap-servers: localhost:9093
+    kafka-consumer-group: test

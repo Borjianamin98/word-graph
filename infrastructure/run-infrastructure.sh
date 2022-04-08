@@ -2,6 +2,9 @@
 
 set -eu
 
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+cd "${SCRIPT_DIR}" || exit 1
+
 if [[ "${#}" -ne 1 ]]; then
     echo "Illegal number of parameters: <script> <command>"
     echo "  <command>: start | stop"

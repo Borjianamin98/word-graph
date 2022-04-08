@@ -12,14 +12,24 @@
 
     <artifactId>crawler</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>com.google.cloud.tools</groupId>
                 <artifactId>jib-maven-plugin</artifactId>
                 <configuration>
+                    <from>
+                        <image>docker://java-base</image>
+                    </from>
                     <to>
-                        <image>crawler</image>
+                        <image>word-graph/crawler</image>
                     </to>
                 </configuration>
             </plugin>
