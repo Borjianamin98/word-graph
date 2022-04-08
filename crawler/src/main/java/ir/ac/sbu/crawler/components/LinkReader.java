@@ -17,18 +17,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LinksReader {
+public class LinkReader {
 
-    private static final Logger logger = LoggerFactory.getLogger(LinksReader.class);
+    private static final Logger logger = LoggerFactory.getLogger(LinkReader.class);
 
     private final KafkaConfigs kafkaConfigs;
     private final KafkaConsumer<String, String> kafkaConsumer;
     private final BlockingQueue<String> linksQueue;
-    private final Thread linkReader;
+    private final Thread linkReaderThread;
 
     private volatile boolean running = false;
 
-    public LinksReader(ApplicationConfigs applicationConfigs) {
+    public LinkReader(ApplicationConfigs applicationConfigs) {
         this.linksQueue = new ArrayBlockingQueue<>(applicationConfigs.getInMemoryLinkQueueSize());
         this.kafkaConfigs = applicationConfigs.getKafkaConfigs();
 
@@ -36,7 +36,7 @@ public class LinksReader {
         kafkaConsumer.subscribe(Collections.singletonList(kafkaConfigs.getLinksTopicName()));
 
         running = true;
-        this.linkReader = new Thread(() -> {
+        this.linkReaderThread = new Thread(() -> {
             while (running) {
                 try {
                     // Polls at most 500 links from Kafka topic
@@ -55,7 +55,7 @@ public class LinksReader {
                 }
             }
         }, "Link Reader");
-        this.linkReader.start();
+        this.linkReaderThread.start();
     }
 
     public String getNextLink() throws InterruptedException {
@@ -64,18 +64,18 @@ public class LinksReader {
 
     @PreDestroy
     public void destroy() {
-        logger.info("Stopping links reader ...");
+        logger.info("Stopping link reader ...");
         running = false;
-        linkReader.interrupt();
+        linkReaderThread.interrupt();
         try {
-            linkReader.join();
+            linkReaderThread.join();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new AssertionError("Unexpected interrupt while waiting for link reader closing");
         }
         kafkaConsumer.close();
         restoreInMemoryLinks();
-        logger.info("Links reader stopped successfully");
+        logger.info("Link reader stopped successfully");
     }
 
     private void restoreInMemoryLinks() {
