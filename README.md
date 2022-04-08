@@ -1,2 +1,3 @@
-# word-graph
-Word Graph 
+# Word Graph
+
+Word Graph Introduction 
