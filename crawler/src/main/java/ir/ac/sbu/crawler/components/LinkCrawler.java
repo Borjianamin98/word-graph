@@ -4,9 +4,9 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import ir.ac.sbu.crawler.config.ApplicationConfigs;
 import ir.ac.sbu.crawler.config.ApplicationConfigs.CrawlerConfigs;
+import ir.ac.sbu.crawler.service.LinkService;
 import ir.ac.sbu.link.LinkUtility;
 import java.net.MalformedURLException;
-import java.time.LocalDateTime;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
@@ -19,17 +19,19 @@ public class LinkCrawler {
     private static final Logger logger = LoggerFactory.getLogger(LinkCrawler.class);
 
     // In-memory cache used to check politeness before sending request to URL
-    private final Cache<String, LocalDateTime> politenessCache;
+    private final Cache<String, Boolean> politenessCache;
+    private final LinkService linkService;
     private final Thread crawlerThread;
 
     private volatile boolean running = false;
 
-    public LinkCrawler(ApplicationConfigs applicationConfigs, LinkReader linkReader) {
+    public LinkCrawler(ApplicationConfigs applicationConfigs, LinkReader linkReader, LinkService linkService) {
         CrawlerConfigs crawlerConfigs = applicationConfigs.getCrawlerConfigs();
         this.politenessCache = Caffeine.newBuilder()
                 .maximumSize(crawlerConfigs.getMaxInMemoryPolitenessRecords())
                 .expireAfterWrite(crawlerConfigs.getPolitenessDurationInSeconds(), TimeUnit.SECONDS)
                 .build();
+        this.linkService = linkService;
 
         running = true;
         this.crawlerThread = new Thread(() -> {
@@ -74,11 +76,21 @@ public class LinkCrawler {
         }
 
         if (isPoliteToCrawl(linkMainDomain)) {
-            // do something
+            if (linkService.isCrawled(link)) {
+                logger.info("Skip link because link crawled before: {}", link);
+                return;
+            }
+            linkService.addLink(link);
+            politenessCache.put(linkMainDomain, true);
+            crawlLink(link);
+            // TODO: handle result of crawl
         } else {
             logger.info("Skip link because of politeness duration: {}", link);
-            // do something
         }
+    }
+
+    private void crawlLink(String link) {
+        // TODO: Implement it
     }
 
     private boolean isPoliteToCrawl(String linkMainDomain) {

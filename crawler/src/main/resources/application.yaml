@@ -14,6 +14,6 @@ spring:
       host: localhost
       port: 27017
       authentication-database: admin
-      database: links_database
+      database: linksDatabase
       username: root
       password: password
