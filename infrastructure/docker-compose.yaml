@@ -127,23 +127,21 @@ services:
     depends_on:
       - zookeeper
 
-  postgres:
-    image: postgres:14.2
-    container_name: postgress
-    hostname: postgress
-    restart: always
-    ports:
-      - 5432:5432
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./postgresql-init.sql:/docker-entrypoint-initdb.d/create_tables.sql
+  mongodb:
+    image: mongo:5.0.6
+    container_name: mongo
+    hostname: mongo
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
 
 volumes:
   hadoop_namenode:
   hadoop_datanode:
   zookeeper_data:
   kafka_data:
-  postgres_data:
+  mongodb_data:

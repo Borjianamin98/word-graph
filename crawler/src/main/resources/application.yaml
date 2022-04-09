@@ -7,3 +7,13 @@ app:
   crawler-configs:
     politeness-duration-in-seconds: 60
     max-in-memory-politeness-records: 10000
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      authentication-database: admin
+      database: links_database
+      username: root
+      password: password
