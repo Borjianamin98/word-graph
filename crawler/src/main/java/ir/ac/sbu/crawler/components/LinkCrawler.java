@@ -4,13 +4,20 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import ir.ac.sbu.crawler.config.ApplicationConfigs;
 import ir.ac.sbu.crawler.config.ApplicationConfigs.CrawlerConfigs;
+import ir.ac.sbu.crawler.exception.LinkDocumentException;
 import ir.ac.sbu.crawler.exception.LinkRequestException;
+import ir.ac.sbu.crawler.model.Page;
 import ir.ac.sbu.crawler.service.LinkService;
 import ir.ac.sbu.link.LinkUtility;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import javax.annotation.PreDestroy;
 import javax.net.ssl.SSLHandshakeException;
@@ -18,8 +25,11 @@ import org.apache.tika.langdetect.optimaize.OptimaizeLangDetector;
 import org.apache.tika.language.detect.LanguageDetector;
 import org.apache.tika.language.detect.LanguageResult;
 import org.jsoup.Connection;
+import org.jsoup.Connection.Response;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -35,7 +45,8 @@ public class LinkCrawler {
     private final LinkService linkService;
     private final Thread crawlerThread;
     // Language detector to detect language of crawled pages
-    private LanguageDetector languageDetector;
+    private final LanguageDetector languageDetector;
+    private final BlockingQueue<Page> crawledPagesQueue;
 
     private volatile boolean running = false;
 
@@ -47,6 +58,7 @@ public class LinkCrawler {
                 .build();
         this.linkService = linkService;
         this.languageDetector = new OptimaizeLangDetector().loadModels();
+        this.crawledPagesQueue = new ArrayBlockingQueue<>(crawlerConfigs.getInMemoryPageQueueSize());
 
         running = true;
         this.crawlerThread = new Thread(() -> {
@@ -81,31 +93,55 @@ public class LinkCrawler {
         logger.info("Link crawler stopped successfully");
     }
 
+    public Page getNextPage() throws InterruptedException {
+        return crawledPagesQueue.take();
+    }
+
     private void processLink(String link) {
-        String linkMainDomain;
-        try {
-            linkMainDomain = LinkUtility.getMainDomain(link);
-        } catch (MalformedURLException e) {
-            logger.warn("Illegal URL for crawling: {}", link, e);
+        if (!shouldCrawl(link)) {
             return;
         }
 
-        if (isPoliteToCrawl(linkMainDomain)) {
-            if (linkService.isCrawled(link)) {
-                logger.info("Skip link because link crawled before: {}", link);
-                return;
+        Optional<Page> crawledPage;
+        try {
+            crawledPage = crawlLink(link);
+        } catch (LinkRequestException | LinkDocumentException e) {
+            logger.warn("Unable to crawl link (ignored): {}", link, e);
+            return;
+        }
+        if (crawledPage.isPresent()) {
+            try {
+                crawledPagesQueue.put(crawledPage.get());
+            } catch (InterruptedException e) {
+                if (running) {
+                    throw new AssertionError("Unexpected interrupt while putting page", e);
+                }
+                Thread.currentThread().interrupt();
             }
-            linkService.addLink(link);
-            politenessCache.put(linkMainDomain, true);
-            crawlLink(link);
-            // TODO: handle result of crawl
-        } else {
-            logger.info("Skip link because of politeness duration: {}", link);
         }
     }
 
-    private void crawlLink(String link) {
-        // TODO: Implement it
+    private Optional<Page> crawlLink(String link) throws LinkRequestException, LinkDocumentException {
+        Connection.Response linkResponse = requestLink(link);
+
+        String redirectedLink = linkResponse.url().toExternalForm();
+        if (!shouldCrawl(redirectedLink)) {
+            return Optional.empty();
+        }
+
+        Document linkDocument = extractDocument(redirectedLink, linkResponse);
+
+        String linkContent = linkDocument.text().replace("\n", " ");
+        if (linkContent.isEmpty()) {
+            logger.info("There is no content for link (ignored): {}", redirectedLink);
+            return Optional.empty();
+        } else if (!isEnglishLanguage(linkContent)) {
+            logger.info("Content of link is not in english language (ignored): {}", redirectedLink);
+            return Optional.empty();
+        }
+
+        Set<String> anchors = getAnchors(redirectedLink, linkDocument);
+        return Optional.of(new Page(redirectedLink, linkContent, anchors));
     }
 
     private Connection.Response requestLink(String link) throws LinkRequestException {
@@ -132,14 +168,62 @@ public class LinkCrawler {
         throw new LinkRequestException("Unable to get response from link: " + link);
     }
 
-    public boolean isEnglishLanguage(String text) {
+    private Document extractDocument(String link, Response response) throws LinkDocumentException {
+        try {
+            String contentType = response.contentType();
+            if (contentType != null && !contentType.contains("text/html")) {
+                logger.warn("Skip link with unknown content type: {}", link);
+            }
+            return response.parse();
+        } catch (StringIndexOutOfBoundsException | IOException e) {
+            logger.warn("Unable to parse link content with jsoup: {}", link);
+            throw new LinkDocumentException("Unable to extract content from link: " + link, e);
+        }
+    }
+
+    private boolean isEnglishLanguage(String text) {
         LanguageResult detectionResult = languageDetector.detect(text);
         return detectionResult.isLanguage("en") &&
                 detectionResult.getRawScore() > this.crawlerConfigs.getEnglishLanguageDetectorMinimumScore();
     }
 
-    private boolean isPoliteToCrawl(String linkMainDomain) {
-        return politenessCache.getIfPresent(linkMainDomain) == null;
+    private Set<String> getAnchors(String link, Document document) throws LinkDocumentException {
+        Set<String> anchors = new HashSet<>();
+        for (Element linkElement : document.getElementsByTag("a")) {
+            String absUrl = linkElement.absUrl("href");
+            if (!absUrl.isEmpty() && !absUrl.matches("mailto:.*") && LinkUtility.isValidUrl(absUrl)) {
+                try {
+                    String normalizedUrl = LinkUtility.normalize(absUrl);
+                    anchors.add(normalizedUrl);
+                } catch (MalformedURLException e) {
+                    throw new LinkDocumentException("Unable to normalize anchor href: link = "
+                            + link + " href link = " + absUrl, e);
+                }
+            }
+        }
+        return anchors;
     }
 
+    private boolean shouldCrawl(String link) {
+        String linkMainDomain;
+        try {
+            linkMainDomain = LinkUtility.getMainDomain(link);
+        } catch (MalformedURLException e) {
+            logger.warn("Illegal URL for crawling: {}", link, e);
+            return false;
+        }
+
+        if (politenessCache.getIfPresent(linkMainDomain) == null) {
+            if (linkService.isCrawled(link)) {
+                return false;
+            } else {
+                linkService.addLink(link);
+                politenessCache.put(linkMainDomain, true);
+                return true;
+            }
+        } else {
+            logger.info("Skip link because of politeness duration: {}", link);
+            return false;
+        }
+    }
 }

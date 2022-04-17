@@ -90,6 +90,7 @@ public class ApplicationConfigs {
         private int politenessDurationInSeconds;
         private int maxInMemoryPolitenessRecords;
         private float englishLanguageDetectorMinimumScore;
+        private int inMemoryPageQueueSize;
 
         public int getPolitenessDurationInSeconds() {
             return politenessDurationInSeconds;
@@ -129,6 +130,14 @@ public class ApplicationConfigs {
 
         public void setEnglishLanguageDetectorMinimumScore(float englishLanguageDetectorMinimumScore) {
             this.englishLanguageDetectorMinimumScore = englishLanguageDetectorMinimumScore;
+        }
+
+        public int getInMemoryPageQueueSize() {
+            return inMemoryPageQueueSize;
+        }
+
+        public void setInMemoryPageQueueSize(int inMemoryPageQueueSize) {
+            this.inMemoryPageQueueSize = inMemoryPageQueueSize;
         }
     }
 }

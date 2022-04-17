@@ -3,7 +3,9 @@ package ir.ac.sbu.crawler.service;
 import ir.ac.sbu.crawler.model.Link;
 import ir.ac.sbu.crawler.repository.LinkRepository;
 import ir.ac.sbu.link.LinkUtility;
+import org.springframework.stereotype.Component;
 
+@Component
 public class LinkService {
 
     private final LinkRepository linkRepository;
