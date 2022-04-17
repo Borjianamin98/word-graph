@@ -85,8 +85,11 @@ public class ApplicationConfigs {
 
     public static class CrawlerConfigs {
 
+        private String requestUserAgent;
+        private int requestTimeoutMilliseconds;
         private int politenessDurationInSeconds;
         private int maxInMemoryPolitenessRecords;
+        private float englishLanguageDetectorMinimumScore;
 
         public int getPolitenessDurationInSeconds() {
             return politenessDurationInSeconds;
@@ -102,6 +105,30 @@ public class ApplicationConfigs {
 
         public void setMaxInMemoryPolitenessRecords(int maxInMemoryPolitenessRecords) {
             this.maxInMemoryPolitenessRecords = maxInMemoryPolitenessRecords;
+        }
+
+        public String getRequestUserAgent() {
+            return requestUserAgent;
+        }
+
+        public void setRequestUserAgent(String requestUserAgent) {
+            this.requestUserAgent = requestUserAgent;
+        }
+
+        public int getRequestTimeoutMilliseconds() {
+            return requestTimeoutMilliseconds;
+        }
+
+        public void setRequestTimeoutMilliseconds(int requestTimeoutMilliseconds) {
+            this.requestTimeoutMilliseconds = requestTimeoutMilliseconds;
+        }
+
+        public float getEnglishLanguageDetectorMinimumScore() {
+            return englishLanguageDetectorMinimumScore;
+        }
+
+        public void setEnglishLanguageDetectorMinimumScore(float englishLanguageDetectorMinimumScore) {
+            this.englishLanguageDetectorMinimumScore = englishLanguageDetectorMinimumScore;
         }
     }
 }

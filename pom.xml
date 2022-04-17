@@ -23,6 +23,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <kafka.version>2.8.1</kafka.version>
+        <caffeine.version>2.9.3</caffeine.version>
+        <jsoup.version>1.14.3</jsoup.version>
+        <langdetect.version>1.1-20120112</langdetect.version>
     </properties>
 
     <repositories>
@@ -91,14 +96,28 @@
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
-                <version>2.8.1</version>
+                <version>${kafka.version}</version>
             </dependency>
 
             <!-- Caffeine in-memory cache library -->
             <dependency>
                 <groupId>com.github.ben-manes.caffeine</groupId>
                 <artifactId>caffeine</artifactId>
-                <version>2.9.3</version>
+                <version>${caffeine.version}</version>
+            </dependency>
+
+            <!-- Jsoup library for parse pages -->
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+            </dependency>
+
+            <!-- Language detector library-->
+            <dependency>
+                <groupId>com.cybozu.labs</groupId>
+                <artifactId>langdetect</artifactId>
+                <version>${langdetect.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

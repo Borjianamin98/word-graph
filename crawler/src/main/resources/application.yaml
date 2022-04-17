@@ -7,6 +7,9 @@ app:
   crawler-configs:
     politeness-duration-in-seconds: 60
     max-in-memory-politeness-records: 10000
+    request-user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0
+    request-timeout-milliseconds: 15000
+    english-language-detector-minimum-score: 0.90
 
 spring:
   data:

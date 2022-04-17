@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 cd "${SCRIPT_DIR}" || exit 1
 
