@@ -4,6 +4,7 @@ import ir.ac.sbu.crawler.config.ApplicationConfigs;
 import ir.ac.sbu.crawler.config.ApplicationConfigs.KafkaConfigs;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Properties;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import javax.annotation.PreDestroy;
@@ -11,7 +12,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -80,7 +84,10 @@ public class LinkReader {
 
     private void restoreInMemoryLinks() {
         logger.info("Restore in-memory links to Kafka topic: count = {}", linksQueue.size());
-        try (KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(kafkaConfigs.getProducerProperties())) {
+        Properties kafkaProducerConfigs = kafkaConfigs.getBaseProducerProperties();
+        kafkaProducerConfigs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        kafkaProducerConfigs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        try (KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(kafkaProducerConfigs)) {
             for (String link : linksQueue) {
                 kafkaProducer.send(new ProducerRecord<>(kafkaConfigs.getLinksTopicName(), link));
             }

@@ -46,7 +46,9 @@ public class LinkCrawler {
     private final Thread crawlerThread;
     // Language detector to detect language of crawled pages
     private final LanguageDetector languageDetector;
+
     private final BlockingQueue<Page> crawledPagesQueue;
+    private final BlockingQueue<String> newLinksQueue;
 
     private volatile boolean running = false;
 
@@ -59,13 +61,14 @@ public class LinkCrawler {
         this.linkService = linkService;
         this.languageDetector = new OptimaizeLangDetector().loadModels();
         this.crawledPagesQueue = new ArrayBlockingQueue<>(crawlerConfigs.getInMemoryPageQueueSize());
+        this.newLinksQueue = new ArrayBlockingQueue<>(crawlerConfigs.getInMemoryNewLinkQueueSize());
 
         running = true;
         this.crawlerThread = new Thread(() -> {
             while (running) {
-                String link;
                 try {
-                    link = linkReader.getNextLink();
+                    String link = linkReader.getNextLink();
+                    processLink(link);
                 } catch (InterruptedException e) {
                     if (running) {
                         throw new AssertionError("Unexpected interrupt while polling links", e);
@@ -73,7 +76,6 @@ public class LinkCrawler {
                     Thread.currentThread().interrupt();
                     break;
                 }
-                processLink(link);
             }
         }, "Link Crawler");
         this.crawlerThread.start();
@@ -97,8 +99,17 @@ public class LinkCrawler {
         return crawledPagesQueue.take();
     }
 
-    private void processLink(String link) {
-        if (!shouldCrawl(link)) {
+    public String getNextNewLink() throws InterruptedException {
+        return newLinksQueue.take();
+    }
+
+    private void processLink(String link) throws InterruptedException {
+        if (!isPoliteToCrawl(link)) {
+            // We will crawl it again later.
+            newLinksQueue.put(link);
+        }
+        if (isCrawledBefore(link)) {
+            logger.info("Skip link because crawled before: {}", link);
             return;
         }
 
@@ -110,14 +121,11 @@ public class LinkCrawler {
             return;
         }
         if (crawledPage.isPresent()) {
-            try {
-                crawledPagesQueue.put(crawledPage.get());
-            } catch (InterruptedException e) {
-                if (running) {
-                    throw new AssertionError("Unexpected interrupt while putting page", e);
-                }
-                Thread.currentThread().interrupt();
+            Page page = crawledPage.get();
+            for (String anchorLink : page.getAnchorsList()) {
+                newLinksQueue.put(anchorLink);
             }
+            crawledPagesQueue.put(page);
         }
     }
 
@@ -125,7 +133,7 @@ public class LinkCrawler {
         Connection.Response linkResponse = requestLink(link);
 
         String redirectedLink = linkResponse.url().toExternalForm();
-        if (!shouldCrawl(redirectedLink)) {
+        if (isCrawledBefore(redirectedLink)) {
             return Optional.empty();
         }
 
@@ -208,7 +216,7 @@ public class LinkCrawler {
         return anchors;
     }
 
-    private boolean shouldCrawl(String link) {
+    private boolean isPoliteToCrawl(String link) {
         String linkMainDomain;
         try {
             linkMainDomain = LinkUtility.getMainDomain(link);
@@ -218,15 +226,19 @@ public class LinkCrawler {
         }
 
         if (politenessCache.getIfPresent(linkMainDomain) == null) {
-            if (linkService.isCrawled(link)) {
-                return false;
-            } else {
-                linkService.addLink(link);
-                politenessCache.put(linkMainDomain, true);
-                return true;
-            }
+            politenessCache.put(linkMainDomain, true);
+            return true;
         } else {
             logger.info("Skip link because of politeness duration: {}", link);
+            return false;
+        }
+    }
+
+    private boolean isCrawledBefore(String link) {
+        if (linkService.isCrawled(link)) {
+            return true;
+        } else {
+            linkService.addLink(link);
             return false;
         }
     }

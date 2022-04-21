@@ -7,6 +7,7 @@ app:
   crawler-configs:
     in-memory-link-queue-size: 100
     in-memory-page-queue-size: 100
+    in-memory-new-link-queue-size: 100
     politeness-duration-in-seconds: 60
     max-in-memory-politeness-records: 10000
     request-user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:99.0) Gecko/20100101 Firefox/99.0

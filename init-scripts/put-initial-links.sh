@@ -12,8 +12,7 @@ fi
 links_topic_name="${1}"
 
 cat << EOF > /tmp/initial-data.txt
-test1
-test2
+http://www.google.com
 EOF
 
 kafka-console-producer.sh \

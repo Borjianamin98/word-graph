@@ -75,11 +75,9 @@ public class ApplicationConfigs {
             return kafkaConsumerConfigs;
         }
 
-        public Properties getProducerProperties() {
+        public Properties getBaseProducerProperties() {
             Properties kafkaProducerConfigs = new Properties();
             kafkaProducerConfigs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
-            kafkaProducerConfigs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-            kafkaProducerConfigs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
             kafkaProducerConfigs.put(ProducerConfig.LINGER_MS_CONFIG, "1000");
             return kafkaProducerConfigs;
         }
@@ -93,6 +91,7 @@ public class ApplicationConfigs {
         private int maxInMemoryPolitenessRecords;
         private float englishLanguageDetectorMinimumScore;
         private int inMemoryLinkQueueSize;
+        private int inMemoryNewLinkQueueSize;
         private int inMemoryPageQueueSize;
 
         public int getPolitenessDurationInSeconds() {
@@ -141,6 +140,14 @@ public class ApplicationConfigs {
 
         public void setInMemoryLinkQueueSize(int inMemoryLinkQueueSize) {
             this.inMemoryLinkQueueSize = inMemoryLinkQueueSize;
+        }
+
+        public int getInMemoryNewLinkQueueSize() {
+            return inMemoryNewLinkQueueSize;
+        }
+
+        public void setInMemoryNewLinkQueueSize(int inMemoryNewLinkQueueSize) {
+            this.inMemoryNewLinkQueueSize = inMemoryNewLinkQueueSize;
         }
 
         public int getInMemoryPageQueueSize() {
