@@ -29,7 +29,7 @@ public class LinkReader {
     private volatile boolean running = false;
 
     public LinkReader(ApplicationConfigs applicationConfigs) {
-        this.linksQueue = new ArrayBlockingQueue<>(applicationConfigs.getInMemoryLinkQueueSize());
+        this.linksQueue = new ArrayBlockingQueue<>(applicationConfigs.getCrawlerConfigs().getInMemoryLinkQueueSize());
         this.kafkaConfigs = applicationConfigs.getKafkaConfigs();
 
         kafkaConsumer = new KafkaConsumer<>(kafkaConfigs.getConsumerProperties());

@@ -3,6 +3,7 @@ package ir.ac.sbu.crawler.config;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -14,17 +15,8 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties
 public class ApplicationConfigs {
 
-    private int inMemoryLinkQueueSize;
     private final KafkaConfigs kafkaConfigs = new KafkaConfigs();
     private final CrawlerConfigs crawlerConfigs = new CrawlerConfigs();
-
-    public int getInMemoryLinkQueueSize() {
-        return inMemoryLinkQueueSize;
-    }
-
-    public void setInMemoryLinkQueueSize(int inMemoryLinkQueueSize) {
-        this.inMemoryLinkQueueSize = inMemoryLinkQueueSize;
-    }
 
     public KafkaConfigs getKafkaConfigs() {
         return kafkaConfigs;
@@ -39,6 +31,7 @@ public class ApplicationConfigs {
         private String bootstrapServers;
         private String kafkaConsumerGroup;
         private String linksTopicName;
+        private String pagesTopicName;
 
         public String getKafkaConsumerGroup() {
             return kafkaConsumerGroup;
@@ -64,6 +57,14 @@ public class ApplicationConfigs {
             this.linksTopicName = linksTopicName;
         }
 
+        public String getPagesTopicName() {
+            return pagesTopicName;
+        }
+
+        public void setPagesTopicName(String pagesTopicName) {
+            this.pagesTopicName = pagesTopicName;
+        }
+
         public Properties getConsumerProperties() {
             Properties kafkaConsumerConfigs = new Properties();
             kafkaConsumerConfigs.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, false);
@@ -78,7 +79,8 @@ public class ApplicationConfigs {
             Properties kafkaProducerConfigs = new Properties();
             kafkaProducerConfigs.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
             kafkaProducerConfigs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-            kafkaProducerConfigs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+            kafkaProducerConfigs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, ByteArraySerializer.class);
+            kafkaProducerConfigs.put(ProducerConfig.LINGER_MS_CONFIG, "1000");
             return kafkaProducerConfigs;
         }
     }
@@ -90,6 +92,7 @@ public class ApplicationConfigs {
         private int politenessDurationInSeconds;
         private int maxInMemoryPolitenessRecords;
         private float englishLanguageDetectorMinimumScore;
+        private int inMemoryLinkQueueSize;
         private int inMemoryPageQueueSize;
 
         public int getPolitenessDurationInSeconds() {
@@ -130,6 +133,14 @@ public class ApplicationConfigs {
 
         public void setEnglishLanguageDetectorMinimumScore(float englishLanguageDetectorMinimumScore) {
             this.englishLanguageDetectorMinimumScore = englishLanguageDetectorMinimumScore;
+        }
+
+        public int getInMemoryLinkQueueSize() {
+            return inMemoryLinkQueueSize;
+        }
+
+        public void setInMemoryLinkQueueSize(int inMemoryLinkQueueSize) {
+            this.inMemoryLinkQueueSize = inMemoryLinkQueueSize;
         }
 
         public int getInMemoryPageQueueSize() {
