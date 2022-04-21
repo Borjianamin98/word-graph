@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package ir.ac.sbu.model;
+
+message Page {
+    string link = 1;
+    string content = 2;
+    repeated string anchors = 3;
+}
+

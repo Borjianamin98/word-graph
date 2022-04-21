@@ -1,7 +1,7 @@
 package ir.ac.sbu.crawler.components;
 
 import ir.ac.sbu.crawler.config.ApplicationConfigs;
-import ir.ac.sbu.crawler.model.Page;
+import ir.ac.sbu.model.Models.Page;
 import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

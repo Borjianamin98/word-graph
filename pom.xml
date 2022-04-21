@@ -17,6 +17,7 @@
     <modules>
         <module>crawler</module>
         <module>general</module>
+        <module>model</module>
     </modules>
 
     <properties>
@@ -91,6 +92,11 @@
                 <artifactId>general</artifactId>
                 <version>0.0.1-SNAPSHOT</version>
             </dependency>
+            <dependency>
+                <groupId>ir.ac.sbu</groupId>
+                <artifactId>model</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+            </dependency>
 
             <!-- Kafka client library -->
             <dependency>
@@ -119,6 +125,13 @@
                 <artifactId>langdetect</artifactId>
                 <version>${langdetect.version}</version>
             </dependency>
+
+            <!-- Protobuf java -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>3.20.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -141,6 +154,31 @@
                             <goals>
                                 <goal>dockerBuild</goal>
                             </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>com.github.os72</groupId>
+                    <artifactId>protoc-jar-maven-plugin</artifactId>
+                    <version>3.11.4</version>
+                    <executions>
+                        <execution>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <protocVersion>3.20.0</protocVersion>
+                                <inputDirectories>
+                                    <include>src/main/resources</include>
+                                </inputDirectories>
+                                <outputTargets>
+                                    <outputTarget>
+                                        <type>java</type>
+                                        <outputDirectory>src/main/java</outputDirectory>
+                                    </outputTarget>
+                                </outputTargets>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>

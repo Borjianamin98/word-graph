@@ -6,9 +6,9 @@ import ir.ac.sbu.crawler.config.ApplicationConfigs;
 import ir.ac.sbu.crawler.config.ApplicationConfigs.CrawlerConfigs;
 import ir.ac.sbu.crawler.exception.LinkDocumentException;
 import ir.ac.sbu.crawler.exception.LinkRequestException;
-import ir.ac.sbu.crawler.model.Page;
 import ir.ac.sbu.crawler.service.LinkService;
 import ir.ac.sbu.link.LinkUtility;
+import ir.ac.sbu.model.Models.Page;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
@@ -141,7 +141,11 @@ public class LinkCrawler {
         }
 
         Set<String> anchors = getAnchors(redirectedLink, linkDocument);
-        return Optional.of(new Page(redirectedLink, linkContent, anchors));
+        return Optional.of(Page.newBuilder()
+                .setLink(redirectedLink)
+                .setContent(linkContent)
+                .addAllAnchors(anchors)
+                .build());
     }
 
     private Connection.Response requestLink(String link) throws LinkRequestException {
