@@ -1,7 +1,7 @@
 app:
   kafka-configs:
     bootstrap-servers: localhost:9093
-    kafka-consumer-group: anchor-extractor3
+    kafka-consumer-group: anchor-extractor
     pages-topic-name: pages
     anchors-topic-name: anchors
   anchor-extractor-configs:

@@ -10,9 +10,13 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>anchor-extractor</artifactId>
+    <artifactId>anchor-parquet-writer</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>ir.ac.sbu</groupId>
+            <artifactId>general</artifactId>
+        </dependency>
         <dependency>
             <groupId>ir.ac.sbu</groupId>
             <artifactId>model</artifactId>
@@ -21,6 +25,20 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.sahabpardaz</groupId>
+            <artifactId>kafka-parquet-writer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-mapreduce-client-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>dns-cache-manipulator</artifactId>
         </dependency>
     </dependencies>
 
@@ -34,7 +52,7 @@
                         <image>docker://java-base</image>
                     </from>
                     <to>
-                        <image>word-graph/anchor-extractor</image>
+                        <image>word-graph/anchor-parquet-writer</image>
                     </to>
                 </configuration>
             </plugin>

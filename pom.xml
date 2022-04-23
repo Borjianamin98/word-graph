@@ -16,6 +16,7 @@
 
     <modules>
         <module>anchor-extractor</module>
+        <module>anchor-parquet-writer</module>
         <module>crawler</module>
         <module>general</module>
         <module>model</module>
@@ -29,7 +30,12 @@
         <kafka.version>2.8.1</kafka.version>
         <caffeine.version>2.9.3</caffeine.version>
         <jsoup.version>1.14.3</jsoup.version>
-        <langdetect.version>1.1-20120112</langdetect.version>
+        <tika.version>2.3.0</tika.version>
+        <hadoop.version>2.7.7</hadoop.version>
+        <parquet.protobuf.version>1.12.2</parquet.protobuf.version>
+        <protobuf.java.version>3.20.0</protobuf.java.version>
+        <kafka.parquet.writer.version>2.0.0</kafka.parquet.writer.version>
+        <dns.cache.manipulator.version>1.7.1</dns.cache.manipulator.version>
     </properties>
 
     <repositories>
@@ -124,19 +130,57 @@
             <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
-                <version>2.3.0</version>
+                <version>${tika.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-langdetect-optimaize</artifactId>
-                <version>2.3.0</version>
+                <version>${tika.version}</version>
             </dependency>
 
             <!-- Protobuf java -->
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>3.20.0</version>
+                <version>${protobuf.java.version}</version>
+            </dependency>
+
+            <!-- Kafka parquet writer -->
+            <dependency>
+                <groupId>com.github.sahabpardaz</groupId>
+                <artifactId>kafka-parquet-writer</artifactId>
+                <version>${kafka.parquet.writer.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-reload4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-mapreduce-client-core</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-reload4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- Runtime manipulation of Java DNS -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>dns-cache-manipulator</artifactId>
+                <version>${dns.cache.manipulator.version}</version>
+            </dependency>
+
+            <!-- Parquet protobuf converter version -->
+            <dependency>
+                <groupId>org.apache.parquet</groupId>
+                <artifactId>parquet-protobuf</artifactId>
+                <version>${parquet.protobuf.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

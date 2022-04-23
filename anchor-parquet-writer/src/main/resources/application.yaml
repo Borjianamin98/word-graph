@@ -1,0 +1,15 @@
+app:
+  kafka-configs:
+    bootstrap-servers: localhost:9093
+    kafka-consumer-group: anchor-parquet-writer
+    anchors-topic-name: anchors
+  anchor-parquet-writer-configs:
+    max-file-open-duration-seconds: 3600 # 1 hour
+    max-file-size-bytes: 134217728 # 128 MBytes
+    target-parquet-directory: /anchors-parquet
+    thread-count: 1
+  hadoop-configs:
+    hadoop-name-node-hostname: namenode
+    hadoop-data-node-hostname: datanode
+    hadoop-name-node-port: 9000
+

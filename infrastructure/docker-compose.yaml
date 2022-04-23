@@ -22,6 +22,7 @@ services:
     hostname: datanode
     restart: always
     ports:
+      - 50010:50010 # Data transfer port
       - 50075:50075 # Download file from UI
     volumes:
       - hadoop_datanode:/dfs/data
