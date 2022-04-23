@@ -1,0 +1,11 @@
+app:
+  anchors-parquet-directory: /anchors-parquet
+  spark-configs:
+    spark-master-address: spark-master:7077
+    spark-configs:
+      spark.executor.memory: 6g
+      spark.driver.memory: 2g
+  hadoop-configs:
+    hadoop-name-node-hostname: namenode
+    hadoop-name-node-port: 9000
+

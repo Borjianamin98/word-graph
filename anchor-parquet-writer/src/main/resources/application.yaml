@@ -12,4 +12,5 @@ app:
     hadoop-name-node-hostname: namenode
     hadoop-data-node-hostname: datanode
     hadoop-name-node-port: 9000
+    in-hadoop-network: false
 

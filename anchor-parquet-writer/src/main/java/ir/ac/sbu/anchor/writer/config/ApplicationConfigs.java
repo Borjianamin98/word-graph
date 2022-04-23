@@ -33,7 +33,8 @@ public class ApplicationConfigs {
 
         private String hadoopNameNodeHostname;
         private String hadoopDataNodeHostname;
-        private String hadoopNameNodePort;
+        private int hadoopNameNodePort;
+        private boolean inHadoopNetwork;
 
         public String getHadoopNameNodeHostname() {
             return hadoopNameNodeHostname;
@@ -51,12 +52,20 @@ public class ApplicationConfigs {
             this.hadoopDataNodeHostname = hadoopDataNodeHostname;
         }
 
-        public String getHadoopNameNodePort() {
+        public int getHadoopNameNodePort() {
             return hadoopNameNodePort;
         }
 
-        public void setHadoopNameNodePort(String hadoopNameNodePort) {
+        public void setHadoopNameNodePort(int hadoopNameNodePort) {
             this.hadoopNameNodePort = hadoopNameNodePort;
+        }
+
+        public boolean isInHadoopNetwork() {
+            return inHadoopNetwork;
+        }
+
+        public void setInHadoopNetwork(boolean inHadoopNetwork) {
+            this.inHadoopNetwork = inHadoopNetwork;
         }
     }
 

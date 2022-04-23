@@ -32,13 +32,16 @@ public class AnchorParquetWriter {
 
         HdfsConfiguration hdfsConfiguration = new HdfsConfiguration();
         hdfsConfiguration.set(DFSConfigKeys.FS_DEFAULT_NAME_KEY,
-                String.format("hdfs://localhost:%s", hadoopConfigs.getHadoopNameNodePort()));
-        // Fix issue of connecting to hadoop infrastructure from outside of docker network
-        // Related link: https://github.com/big-data-europe/docker-hadoop/issues/98#issuecomment-919815981
-        hdfsConfiguration.set(DFSConfigKeys.DFS_CLIENT_USE_DN_HOSTNAME, "true");
-        hdfsConfiguration.set(DFSConfigKeys.DFS_DATANODE_USE_DN_HOSTNAME, "true");
-        DnsCacheManipulator.setDnsCache(hadoopConfigs.getHadoopNameNodeHostname(), LOCALHOST_IP);
-        DnsCacheManipulator.setDnsCache(hadoopConfigs.getHadoopDataNodeHostname(), LOCALHOST_IP);
+                String.format("hdfs://%s:%d",
+                        hadoopConfigs.getHadoopDataNodeHostname(), hadoopConfigs.getHadoopNameNodePort()));
+        if (!hadoopConfigs.isInHadoopNetwork()) {
+            // Fix issue of connecting to hadoop infrastructure from outside of docker network
+            // Related link: https://github.com/big-data-europe/docker-hadoop/issues/98#issuecomment-919815981
+            hdfsConfiguration.set(DFSConfigKeys.DFS_CLIENT_USE_DN_HOSTNAME, "true");
+            hdfsConfiguration.set(DFSConfigKeys.DFS_DATANODE_USE_DN_HOSTNAME, "true");
+            DnsCacheManipulator.setDnsCache(hadoopConfigs.getHadoopNameNodeHostname(), LOCALHOST_IP);
+            DnsCacheManipulator.setDnsCache(hadoopConfigs.getHadoopDataNodeHostname(), LOCALHOST_IP);
+        }
 
         parquetWriter = new KafkaProtoParquetWriter.Builder<Anchor>()
                 .consumerConfig(kafkaConfigs.getConsumerProperties(true))

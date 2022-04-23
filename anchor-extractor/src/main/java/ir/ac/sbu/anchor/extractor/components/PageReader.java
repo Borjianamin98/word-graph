@@ -39,7 +39,7 @@ public class PageReader {
                 applicationConfigs.getAnchorExtractorConfigs().getInMemoryPageQueueSize());
         this.kafkaConfigs = applicationConfigs.getKafkaConfigs();
 
-        kafkaConsumer = new KafkaConsumer<>(kafkaConfigs.getConsumerProperties());
+        kafkaConsumer = new KafkaConsumer<>(kafkaConfigs.getConsumerProperties(true));
         kafkaConsumer.subscribe(Collections.singletonList(kafkaConfigs.getPagesTopicName()));
 
         running = true;
