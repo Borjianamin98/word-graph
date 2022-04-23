@@ -2,6 +2,8 @@
 
 ## MongoDB
 
+Some useful commands:
+
 ```bash
 mongo --username root --password password
 show dbs;

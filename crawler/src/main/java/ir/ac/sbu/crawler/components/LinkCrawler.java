@@ -2,6 +2,7 @@ package ir.ac.sbu.crawler.components;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.mongodb.MongoInternalException;
 import ir.ac.sbu.crawler.config.ApplicationConfigs;
 import ir.ac.sbu.crawler.config.ApplicationConfigs.CrawlerConfigs;
 import ir.ac.sbu.crawler.exception.LinkDocumentException;
@@ -69,7 +70,7 @@ public class LinkCrawler {
                 try {
                     String link = linkReader.getNextLink();
                     processLink(link);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException | MongoInternalException e) {
                     if (running) {
                         throw new AssertionError("Unexpected interrupt while polling links", e);
                     }
@@ -104,14 +105,27 @@ public class LinkCrawler {
     }
 
     private void processLink(String link) throws InterruptedException {
-        if (!isPoliteToCrawl(link)) {
+        String linkMainDomain;
+        try {
+            linkMainDomain = LinkUtility.getMainDomain(link);
+        } catch (MalformedURLException e) {
+            logger.warn("Illegal URL for crawling (Ignored for crawling): {}", link, e);
+            return;
+        }
+
+        if (!isPoliteToCrawl(linkMainDomain)) {
             // We will crawl it again later.
+            logger.info("Skip link because of politeness duration: link = {}, domain = {}", link, linkMainDomain);
             newLinksQueue.put(link);
+            return;
         }
         if (isCrawledBefore(link)) {
             logger.info("Skip link because crawled before: {}", link);
             return;
         }
+
+        linkService.addLink(link);
+        politenessCache.put(linkMainDomain, true);
 
         Optional<Page> crawledPage;
         try {
@@ -129,7 +143,8 @@ public class LinkCrawler {
         }
     }
 
-    private Optional<Page> crawlLink(String link) throws LinkRequestException, LinkDocumentException {
+    private Optional<Page> crawlLink(String link)
+            throws LinkRequestException, LinkDocumentException, InterruptedException {
         Connection.Response linkResponse = requestLink(link);
 
         String redirectedLink = linkResponse.url().toExternalForm();
@@ -137,6 +152,7 @@ public class LinkCrawler {
             return Optional.empty();
         }
 
+        linkService.addLink(link);
         Document linkDocument = extractDocument(redirectedLink, linkResponse);
 
         String linkContent = linkDocument.text().replace("\n", " ");
@@ -216,30 +232,11 @@ public class LinkCrawler {
         return anchors;
     }
 
-    private boolean isPoliteToCrawl(String link) {
-        String linkMainDomain;
-        try {
-            linkMainDomain = LinkUtility.getMainDomain(link);
-        } catch (MalformedURLException e) {
-            logger.warn("Illegal URL for crawling: {}", link, e);
-            return false;
-        }
-
-        if (politenessCache.getIfPresent(linkMainDomain) == null) {
-            politenessCache.put(linkMainDomain, true);
-            return true;
-        } else {
-            logger.info("Skip link because of politeness duration: {}", link);
-            return false;
-        }
+    private boolean isPoliteToCrawl(String linkMainDomain) {
+        return politenessCache.getIfPresent(linkMainDomain) == null;
     }
 
-    private boolean isCrawledBefore(String link) {
-        if (linkService.isCrawled(link)) {
-            return true;
-        } else {
-            linkService.addLink(link);
-            return false;
-        }
+    private boolean isCrawledBefore(String link) throws InterruptedException {
+        return linkService.isCrawled(link);
     }
 }
