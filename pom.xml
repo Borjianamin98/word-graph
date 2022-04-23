@@ -15,6 +15,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>anchor-extractor</module>
         <module>crawler</module>
         <module>general</module>
         <module>model</module>
@@ -119,11 +120,16 @@
                 <version>${jsoup.version}</version>
             </dependency>
 
-            <!-- Language detector library-->
+            <!-- Language detection library -->
             <dependency>
-                <groupId>com.cybozu.labs</groupId>
-                <artifactId>langdetect</artifactId>
-                <version>${langdetect.version}</version>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-langdetect-optimaize</artifactId>
+                <version>2.3.0</version>
             </dependency>
 
             <!-- Protobuf java -->

@@ -10,7 +10,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>crawler</artifactId>
+    <artifactId>anchor-extractor</artifactId>
 
     <dependencies>
         <dependency>
@@ -23,32 +23,8 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-mongodb</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-langdetect-optimaize</artifactId>
         </dependency>
     </dependencies>
 
@@ -62,7 +38,7 @@
                         <image>docker://java-base</image>
                     </from>
                     <to>
-                        <image>word-graph/crawler</image>
+                        <image>word-graph/anchor-extractor</image>
                     </to>
                 </configuration>
             </plugin>

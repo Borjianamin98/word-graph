@@ -1,7 +1,7 @@
 app:
   kafka-configs:
     bootstrap-servers: localhost:9093
-    kafka-consumer-group: test
+    kafka-consumer-group: crawler
     links-topic-name: links
     pages-topic-name: pages
   crawler-configs:

@@ -1,0 +1,10 @@
+app:
+  kafka-configs:
+    bootstrap-servers: localhost:9093
+    kafka-consumer-group: anchor-extractor3
+    pages-topic-name: pages
+    anchors-topic-name: anchors
+  anchor-extractor-configs:
+    in-memory-page-queue-size: 100
+    in-memory-anchors-queue-size: 100
+

@@ -1,7 +1,8 @@
-package ir.ac.sbu.crawler.components;
+package ir.ac.sbu.anchor.extractor.components;
 
-import ir.ac.sbu.crawler.config.ApplicationConfigs;
-import ir.ac.sbu.crawler.config.ApplicationConfigs.KafkaConfigs;
+import ir.ac.sbu.anchor.extractor.config.ApplicationConfigs;
+import ir.ac.sbu.anchor.extractor.config.ApplicationConfigs.KafkaConfigs;
+import ir.ac.sbu.model.Models.Anchor;
 import ir.ac.sbu.model.Models.Page;
 import java.util.Properties;
 import javax.annotation.PreDestroy;
@@ -14,17 +15,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PageSender {
+public class AnchorSender {
 
-    private static final Logger logger = LoggerFactory.getLogger(PageSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(AnchorSender.class);
 
     private final KafkaConfigs kafkaConfigs;
     private final KafkaProducer<byte[], byte[]> kafkaProducer;
-    private final Thread senderThread;
+    private final Thread anchorSenderThread;
 
     private volatile boolean running = false;
 
-    public PageSender(ApplicationConfigs applicationConfigs, LinkCrawler linkCrawler) {
+    public AnchorSender(ApplicationConfigs applicationConfigs, AnchorExtractor anchorExtractor) {
         this.kafkaConfigs = applicationConfigs.getKafkaConfigs();
 
         Properties kafkaProducerConfigs = kafkaConfigs.getBaseProducerProperties();
@@ -33,40 +34,40 @@ public class PageSender {
         kafkaProducer = new KafkaProducer<>(kafkaProducerConfigs);
 
         running = true;
-        this.senderThread = new Thread(() -> {
+        this.anchorSenderThread = new Thread(() -> {
             while (running) {
                 try {
-                    Page page = linkCrawler.getNextPage();
-                    processPage(page);
+                    Anchor anchor = anchorExtractor.getNextAnchor();
+                    processAnchor(anchor);
                 } catch (InterruptedException e) {
                     if (running) {
-                        throw new AssertionError("Unexpected interrupt while processing pages", e);
+                        throw new AssertionError("Unexpected interrupt while processing anchors", e);
                     }
                     Thread.currentThread().interrupt();
                     break;
                 }
             }
-        }, "Page Sender");
-        this.senderThread.start();
+        }, "Anchor Sender");
+        this.anchorSenderThread.start();
     }
 
     @PreDestroy
     public void destroy() {
-        logger.info("Stopping page sender ...");
+        logger.info("Stopping anchor sender ...");
         running = false;
-        senderThread.interrupt();
+        anchorSenderThread.interrupt();
         try {
-            senderThread.join();
+            anchorSenderThread.join();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new AssertionError("Unexpected interrupt while waiting for page sender closing");
+            throw new AssertionError("Unexpected interrupt while waiting for anchor sender closing");
         }
         kafkaProducer.close();
-        logger.info("Page sender stopped successfully");
+        logger.info("Anchor sender stopped successfully");
     }
 
-    private void processPage(Page page) {
-        kafkaProducer.send(new ProducerRecord<>(kafkaConfigs.getPagesTopicName(), page.toByteArray()));
+    private void processAnchor(Anchor anchor) {
+        kafkaProducer.send(new ProducerRecord<>(kafkaConfigs.getAnchorsTopicName(), anchor.toByteArray()));
     }
 
 }

@@ -2,7 +2,6 @@ package ir.ac.sbu.crawler.components;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.mongodb.MongoInternalException;
 import ir.ac.sbu.crawler.config.ApplicationConfigs;
 import ir.ac.sbu.crawler.config.ApplicationConfigs.CrawlerConfigs;
 import ir.ac.sbu.crawler.exception.LinkDocumentException;
@@ -70,9 +69,9 @@ public class LinkCrawler {
                 try {
                     String link = linkReader.getNextLink();
                     processLink(link);
-                } catch (InterruptedException | MongoInternalException e) {
+                } catch (InterruptedException e) {
                     if (running) {
-                        throw new AssertionError("Unexpected interrupt while polling links", e);
+                        throw new AssertionError("Unexpected interrupt while prcessing links", e);
                     }
                     Thread.currentThread().interrupt();
                     break;

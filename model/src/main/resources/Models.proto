@@ -8,3 +8,8 @@ message Page {
     repeated string anchors = 3;
 }
 
+message Anchor {
+    string source = 1;
+    string destination = 2;
+}
+
