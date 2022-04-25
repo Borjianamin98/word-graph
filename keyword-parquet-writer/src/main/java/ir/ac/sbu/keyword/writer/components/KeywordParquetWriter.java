@@ -1,11 +1,11 @@
-package ir.ac.sbu.anchor.writer.components;
+package ir.ac.sbu.keyword.writer.components;
 
 import com.alibaba.dcm.DnsCacheManipulator;
-import ir.ac.sbu.anchor.writer.config.ApplicationConfigs;
-import ir.ac.sbu.anchor.writer.config.ApplicationConfigs.AnchorParquetWriterConfigs;
-import ir.ac.sbu.anchor.writer.config.ApplicationConfigs.HadoopConfigs;
-import ir.ac.sbu.anchor.writer.config.ApplicationConfigs.KafkaConfigs;
 import ir.ac.sbu.exception.InitializerFailureException;
+import ir.ac.sbu.keyword.writer.config.ApplicationConfigs;
+import ir.ac.sbu.keyword.writer.config.ApplicationConfigs.HadoopConfigs;
+import ir.ac.sbu.keyword.writer.config.ApplicationConfigs.KafkaConfigs;
+import ir.ac.sbu.keyword.writer.config.ApplicationConfigs.KeywordParquetWriterConfigs;
 import ir.ac.sbu.model.Models.Anchor;
 import ir.sahab.kafka.reader.KafkaProtoParquetWriter;
 import java.io.IOException;
@@ -18,16 +18,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AnchorParquetWriter {
+public class KeywordParquetWriter {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnchorParquetWriter.class);
+    private static final Logger logger = LoggerFactory.getLogger(KeywordParquetWriter.class);
     public static final String LOCALHOST_IP = "127.0.0.1";
 
     private final KafkaProtoParquetWriter<Anchor> parquetWriter;
 
-    public AnchorParquetWriter(ApplicationConfigs applicationConfigs) {
+    public KeywordParquetWriter(ApplicationConfigs applicationConfigs) {
         KafkaConfigs kafkaConfigs = applicationConfigs.getKafkaConfigs();
-        AnchorParquetWriterConfigs anchorParquetWriterConfigs = applicationConfigs.getAnchorParquetWriterConfigs();
+        KeywordParquetWriterConfigs keywordParquetWriterConfigs = applicationConfigs.getKeywordParquetWriterConfigs();
         HadoopConfigs hadoopConfigs = applicationConfigs.getHadoopConfigs();
 
         HdfsConfiguration hdfsConfiguration = new HdfsConfiguration();
@@ -45,13 +45,13 @@ public class AnchorParquetWriter {
 
         parquetWriter = new KafkaProtoParquetWriter.Builder<Anchor>()
                 .consumerConfig(kafkaConfigs.getConsumerProperties(true))
-                .topicName(kafkaConfigs.getAnchorsTopicName())
+                .topicName(kafkaConfigs.getKeywordsTopicName())
                 .hadoopConf(hdfsConfiguration)
-                .targetDir(anchorParquetWriterConfigs.getTargetParquetDirectory())
-                .maxFileOpenDurationSeconds(anchorParquetWriterConfigs.getMaxFileOpenDurationSeconds())
-                .maxFileSize(anchorParquetWriterConfigs.getMaxFileSizeBytes())
+                .targetDir(keywordParquetWriterConfigs.getTargetParquetDirectory())
+                .maxFileOpenDurationSeconds(keywordParquetWriterConfigs.getMaxFileOpenDurationSeconds())
+                .maxFileSize(keywordParquetWriterConfigs.getMaxFileSizeBytes())
                 .compressionCodecName(CompressionCodecName.SNAPPY)
-                .threadCount(anchorParquetWriterConfigs.getThreadCount())
+                .threadCount(keywordParquetWriterConfigs.getThreadCount())
                 .protoClass(Anchor.class)
                 .parser(Anchor.parser())
                 .build();
@@ -64,10 +64,10 @@ public class AnchorParquetWriter {
 
     @PreDestroy
     public void destroy() {
-        logger.info("Stopping anchor parquet writer ...");
+        logger.info("Stopping keyword parquet writer ...");
         try {
             parquetWriter.close();
-            logger.info("Anchor parquet writer stopped successfully");
+            logger.info("Keyword parquet writer stopped successfully");
         } catch (IOException e) {
             Thread.currentThread().interrupt();
             logger.error("Unexpected interrupt", e);

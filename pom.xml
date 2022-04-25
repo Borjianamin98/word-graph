@@ -15,6 +15,7 @@
         <module>general</module>
         <module>graph-producer</module>
         <module>keyword-extractor</module>
+        <module>keyword-parquet-writer</module>
         <module>model</module>
     </modules>
 
