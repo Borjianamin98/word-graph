@@ -1,5 +1,6 @@
 app:
   anchors-parquet-directory: /anchors-parquet
+  keywords-parquet-directory: /keywords-parquet
   spark-configs:
     spark-master-address: spark-master:7077
     spark-configs:

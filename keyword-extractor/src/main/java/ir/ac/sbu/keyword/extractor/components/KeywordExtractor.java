@@ -4,10 +4,13 @@ import ir.ac.sbu.keyword.extractor.config.ApplicationConfigs;
 import ir.ac.sbu.keyword.extractor.config.ApplicationConfigs.KeywordExtractorConfigs;
 import ir.ac.sbu.model.Models.Page;
 import ir.ac.sbu.model.Models.PageKeywords;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.stream.Collectors;
 import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,14 +68,25 @@ public class KeywordExtractor {
     }
 
     private void processPage(Page page) throws InterruptedException {
-        logger.info("Extract anchors of page: link = {}", page.getLink());
+        logger.info("Extract keywords of page: link = {}", page.getLink());
 
-        // TODO: Implement this method
-        List<String> extractedKeywords = Collections.emptyList();
+        // TODO: Implement better method
+        Map<String, Integer> tokensCount = new HashMap<>();
+        String pageContent = page.getContent();
+        for (String token : pageContent.split("\\s+")) {
+            String word = token.toLowerCase();
+            if (tokensCount.containsKey(word)) {
+                tokensCount.put(word, tokensCount.get(word) + 1);
+            } else {
+                tokensCount.put(word, 1);
+            }
+        }
+        List<String> topTokens = tokensCount.entrySet().stream().sorted(Entry.comparingByValue())
+                .map(Entry::getKey).limit(5).collect(Collectors.toList());
 
         extractedPageKeywordsQueue.put(PageKeywords.newBuilder()
                 .setLink(page.getLink())
-                .addAllKeywords(extractedKeywords)
+                .addAllKeywords(topTokens)
                 .build());
     }
 }

@@ -36,8 +36,8 @@ public class KeywordSender {
         this.keywordSenderThread = new Thread(() -> {
             while (running) {
                 try {
-                    PageKeywords anchor = keywordExtractor.getNextPageKeywords();
-                    processPageKeywords(anchor);
+                    PageKeywords pageKeywords = keywordExtractor.getNextPageKeywords();
+                    processPageKeywords(pageKeywords);
                 } catch (InterruptedException e) {
                     if (running) {
                         throw new AssertionError("Unexpected interrupt while processing page keywords", e);
@@ -65,8 +65,8 @@ public class KeywordSender {
         logger.info("Keyword sender stopped successfully");
     }
 
-    private void processPageKeywords(PageKeywords anchor) {
-        kafkaProducer.send(new ProducerRecord<>(kafkaConfigs.getKeywordsTopicName(), anchor.toByteArray()));
+    private void processPageKeywords(PageKeywords pageKeywords) {
+        kafkaProducer.send(new ProducerRecord<>(kafkaConfigs.getKeywordsTopicName(), pageKeywords.toByteArray()));
     }
 
 }

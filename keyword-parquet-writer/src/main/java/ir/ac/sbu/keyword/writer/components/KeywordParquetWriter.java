@@ -6,7 +6,7 @@ import ir.ac.sbu.keyword.writer.config.ApplicationConfigs;
 import ir.ac.sbu.keyword.writer.config.ApplicationConfigs.HadoopConfigs;
 import ir.ac.sbu.keyword.writer.config.ApplicationConfigs.KafkaConfigs;
 import ir.ac.sbu.keyword.writer.config.ApplicationConfigs.KeywordParquetWriterConfigs;
-import ir.ac.sbu.model.Models.Anchor;
+import ir.ac.sbu.model.Models.PageKeywords;
 import ir.sahab.kafka.reader.KafkaProtoParquetWriter;
 import java.io.IOException;
 import javax.annotation.PreDestroy;
@@ -23,7 +23,7 @@ public class KeywordParquetWriter {
     private static final Logger logger = LoggerFactory.getLogger(KeywordParquetWriter.class);
     public static final String LOCALHOST_IP = "127.0.0.1";
 
-    private final KafkaProtoParquetWriter<Anchor> parquetWriter;
+    private final KafkaProtoParquetWriter<PageKeywords> parquetWriter;
 
     public KeywordParquetWriter(ApplicationConfigs applicationConfigs) {
         KafkaConfigs kafkaConfigs = applicationConfigs.getKafkaConfigs();
@@ -43,7 +43,7 @@ public class KeywordParquetWriter {
             DnsCacheManipulator.setDnsCache(hadoopConfigs.getHadoopDataNodeHostname(), LOCALHOST_IP);
         }
 
-        parquetWriter = new KafkaProtoParquetWriter.Builder<Anchor>()
+        parquetWriter = new KafkaProtoParquetWriter.Builder<PageKeywords>()
                 .consumerConfig(kafkaConfigs.getConsumerProperties(true))
                 .topicName(kafkaConfigs.getKeywordsTopicName())
                 .hadoopConf(hdfsConfiguration)
@@ -52,8 +52,8 @@ public class KeywordParquetWriter {
                 .maxFileSize(keywordParquetWriterConfigs.getMaxFileSizeBytes())
                 .compressionCodecName(CompressionCodecName.SNAPPY)
                 .threadCount(keywordParquetWriterConfigs.getThreadCount())
-                .protoClass(Anchor.class)
-                .parser(Anchor.parser())
+                .protoClass(PageKeywords.class)
+                .parser(PageKeywords.parser())
                 .build();
         try {
             parquetWriter.start();

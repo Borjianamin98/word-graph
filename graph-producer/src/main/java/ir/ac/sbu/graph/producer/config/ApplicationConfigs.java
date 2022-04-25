@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationConfigs {
 
     private String anchorsParquetDirectory;
+    private String keywordsParquetDirectory;
 
     private final HadoopConfigs hadoopConfigs = new HadoopConfigs();
     private final SparkConfigs sparkConfigs = new SparkConfigs();
@@ -21,6 +22,14 @@ public class ApplicationConfigs {
 
     public void setAnchorsParquetDirectory(String anchorsParquetDirectory) {
         this.anchorsParquetDirectory = anchorsParquetDirectory;
+    }
+
+    public String getKeywordsParquetDirectory() {
+        return keywordsParquetDirectory;
+    }
+
+    public void setKeywordsParquetDirectory(String keywordsParquetDirectory) {
+        this.keywordsParquetDirectory = keywordsParquetDirectory;
     }
 
     public HadoopConfigs getHadoopConfigs() {

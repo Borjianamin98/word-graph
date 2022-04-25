@@ -1,7 +1,7 @@
 app:
   kafka-configs:
     bootstrap-servers: localhost:9093
-    kafka-consumer-group: keyword-parquet-writer
+    kafka-consumer-group: keywords-parquet-writer
     keywords-topic-name: keywords
   keyword-parquet-writer-configs:
     max-file-open-duration-seconds: 3600 # 1 hour

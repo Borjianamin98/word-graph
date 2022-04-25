@@ -33,8 +33,13 @@ public class GraphProducer {
                 .config(sparkConf)
                 .getOrCreate();
 
-        Dataset<Row> ds = sparkSession.read().parquet(hdfsDefaultFs + applicationConfigs.getAnchorsParquetDirectory());
-        ds.show(false);
+        Dataset<Row> anchorsDataset = sparkSession.read().parquet(
+                hdfsDefaultFs + applicationConfigs.getAnchorsParquetDirectory());
+        Dataset<Row> keywordsDataset = sparkSession.read().parquet(
+                hdfsDefaultFs + applicationConfigs.getKeywordsParquetDirectory());
+
+        anchorsDataset.show(false);
+        keywordsDataset.show(false);
     }
 
     @PreDestroy
