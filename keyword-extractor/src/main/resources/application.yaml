@@ -1,0 +1,10 @@
+app:
+  kafka-configs:
+    bootstrap-servers: localhost:9093
+    kafka-consumer-group: keyword-extractor
+    pages-topic-name: pages
+    keywords-topic-name: keywords
+  keyword-extractor-configs:
+    in-memory-page-queue-size: 100
+    in-memory-page-keywords-queue-size: 100
+

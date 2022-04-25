@@ -59,7 +59,7 @@ public class PageSender {
             senderThread.join();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new AssertionError("Unexpected interrupt while waiting for page sender closing");
+            logger.error("Unexpected interrupt", e);
         }
         kafkaProducer.close();
         logger.info("Page sender stopped successfully");

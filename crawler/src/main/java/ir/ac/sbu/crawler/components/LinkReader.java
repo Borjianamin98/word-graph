@@ -75,7 +75,7 @@ public class LinkReader {
             linkReaderThread.join();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new AssertionError("Unexpected interrupt while waiting for link reader closing");
+            logger.info("Unexpected interrupt");
         }
         kafkaConsumer.close();
         restoreInMemoryLinks();

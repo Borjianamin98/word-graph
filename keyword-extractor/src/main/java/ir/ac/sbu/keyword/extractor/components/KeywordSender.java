@@ -1,9 +1,8 @@
-package ir.ac.sbu.anchor.extractor.components;
+package ir.ac.sbu.keyword.extractor.components;
 
-import ir.ac.sbu.anchor.extractor.config.ApplicationConfigs;
-import ir.ac.sbu.anchor.extractor.config.ApplicationConfigs.KafkaConfigs;
-import ir.ac.sbu.model.Models.Anchor;
-import ir.ac.sbu.model.Models.Page;
+import ir.ac.sbu.keyword.extractor.config.ApplicationConfigs;
+import ir.ac.sbu.keyword.extractor.config.ApplicationConfigs.KafkaConfigs;
+import ir.ac.sbu.model.Models.PageKeywords;
 import java.util.Properties;
 import javax.annotation.PreDestroy;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -15,17 +14,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AnchorSender {
+public class KeywordSender {
 
-    private static final Logger logger = LoggerFactory.getLogger(AnchorSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(KeywordSender.class);
 
     private final KafkaConfigs kafkaConfigs;
     private final KafkaProducer<byte[], byte[]> kafkaProducer;
-    private final Thread anchorSenderThread;
+    private final Thread keywordSenderThread;
 
     private volatile boolean running = false;
 
-    public AnchorSender(ApplicationConfigs applicationConfigs, AnchorExtractor anchorExtractor) {
+    public KeywordSender(ApplicationConfigs applicationConfigs, KeywordExtractor keywordExtractor) {
         this.kafkaConfigs = applicationConfigs.getKafkaConfigs();
 
         Properties kafkaProducerConfigs = kafkaConfigs.getBaseProducerProperties();
@@ -34,40 +33,40 @@ public class AnchorSender {
         kafkaProducer = new KafkaProducer<>(kafkaProducerConfigs);
 
         running = true;
-        this.anchorSenderThread = new Thread(() -> {
+        this.keywordSenderThread = new Thread(() -> {
             while (running) {
                 try {
-                    Anchor anchor = anchorExtractor.getNextAnchor();
-                    processAnchor(anchor);
+                    PageKeywords anchor = keywordExtractor.getNextPageKeywords();
+                    processPageKeywords(anchor);
                 } catch (InterruptedException e) {
                     if (running) {
-                        throw new AssertionError("Unexpected interrupt while processing anchors", e);
+                        throw new AssertionError("Unexpected interrupt while processing page keywords", e);
                     }
                     Thread.currentThread().interrupt();
                     break;
                 }
             }
-        }, "Anchor Sender");
-        this.anchorSenderThread.start();
+        }, "Keyword Sender");
+        this.keywordSenderThread.start();
     }
 
     @PreDestroy
     public void destroy() {
-        logger.info("Stopping anchor sender ...");
+        logger.info("Stopping keyword sender ...");
         running = false;
-        anchorSenderThread.interrupt();
+        keywordSenderThread.interrupt();
         try {
-            anchorSenderThread.join();
+            keywordSenderThread.join();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             logger.error("Unexpected interrupt", e);
         }
         kafkaProducer.close();
-        logger.info("Anchor sender stopped successfully");
+        logger.info("Keyword sender stopped successfully");
     }
 
-    private void processAnchor(Anchor anchor) {
-        kafkaProducer.send(new ProducerRecord<>(kafkaConfigs.getAnchorsTopicName(), anchor.toByteArray()));
+    private void processPageKeywords(PageKeywords anchor) {
+        kafkaProducer.send(new ProducerRecord<>(kafkaConfigs.getKeywordsTopicName(), anchor.toByteArray()));
     }
 
 }

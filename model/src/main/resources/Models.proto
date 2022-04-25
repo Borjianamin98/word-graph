@@ -13,3 +13,8 @@ message Anchor {
     string destination = 2;
 }
 
+message PageKeywords {
+    string link = 1;
+    repeated string keywords = 2;
+}
+

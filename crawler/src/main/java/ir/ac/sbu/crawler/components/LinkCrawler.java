@@ -88,11 +88,11 @@ public class LinkCrawler {
         crawlerThread.interrupt();
         try {
             crawlerThread.join();
+            logger.info("Link crawler stopped successfully");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new AssertionError("Unexpected interrupt while waiting for link reader closing");
+            logger.error("Unexpected interrupt", e);
         }
-        logger.info("Link crawler stopped successfully");
     }
 
     public Page getNextPage() throws InterruptedException {

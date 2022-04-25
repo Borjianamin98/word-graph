@@ -1,8 +1,8 @@
-package ir.ac.sbu.anchor.extractor.components;
+package ir.ac.sbu.keyword.extractor.components;
 
 import com.google.protobuf.InvalidProtocolBufferException;
-import ir.ac.sbu.anchor.extractor.config.ApplicationConfigs;
-import ir.ac.sbu.anchor.extractor.config.ApplicationConfigs.KafkaConfigs;
+import ir.ac.sbu.keyword.extractor.config.ApplicationConfigs;
+import ir.ac.sbu.keyword.extractor.config.ApplicationConfigs.KafkaConfigs;
 import ir.ac.sbu.model.Models.Page;
 import java.time.Duration;
 import java.util.Collections;
@@ -36,7 +36,7 @@ public class PageReader {
 
     public PageReader(ApplicationConfigs applicationConfigs) {
         this.pagesQueue = new ArrayBlockingQueue<>(
-                applicationConfigs.getAnchorExtractorConfigs().getInMemoryPageQueueSize());
+                applicationConfigs.getKeywordExtractorConfigs().getInMemoryPageQueueSize());
         this.kafkaConfigs = applicationConfigs.getKafkaConfigs();
 
         kafkaConsumer = new KafkaConsumer<>(kafkaConfigs.getConsumerProperties(true));

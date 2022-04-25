@@ -50,11 +50,11 @@ public class AnchorExtractor {
         anchorExtractorThread.interrupt();
         try {
             anchorExtractorThread.join();
+            logger.info("Anchor extractor stopped successfully");
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new AssertionError("Unexpected interrupt while waiting for anchor extractor closing");
+            logger.error("Unexpected interrupt", e);
         }
-        logger.info("Anchor extractor stopped successfully");
     }
 
     public Anchor getNextAnchor() throws InterruptedException {

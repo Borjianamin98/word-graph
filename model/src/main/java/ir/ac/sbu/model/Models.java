@@ -1674,6 +1674,796 @@ public final class Models {
 
   }
 
+  public interface PageKeywordsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:ir.ac.sbu.model.PageKeywords)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>string link = 1;</code>
+     * @return The link.
+     */
+    java.lang.String getLink();
+    /**
+     * <code>string link = 1;</code>
+     * @return The bytes for link.
+     */
+    com.google.protobuf.ByteString
+        getLinkBytes();
+
+    /**
+     * <code>repeated string keywords = 2;</code>
+     * @return A list containing the keywords.
+     */
+    java.util.List<java.lang.String>
+        getKeywordsList();
+    /**
+     * <code>repeated string keywords = 2;</code>
+     * @return The count of keywords.
+     */
+    int getKeywordsCount();
+    /**
+     * <code>repeated string keywords = 2;</code>
+     * @param index The index of the element to return.
+     * @return The keywords at the given index.
+     */
+    java.lang.String getKeywords(int index);
+    /**
+     * <code>repeated string keywords = 2;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the keywords at the given index.
+     */
+    com.google.protobuf.ByteString
+        getKeywordsBytes(int index);
+  }
+  /**
+   * Protobuf type {@code ir.ac.sbu.model.PageKeywords}
+   */
+  public static final class PageKeywords extends
+      com.google.protobuf.GeneratedMessageV3 implements
+      // @@protoc_insertion_point(message_implements:ir.ac.sbu.model.PageKeywords)
+      PageKeywordsOrBuilder {
+  private static final long serialVersionUID = 0L;
+    // Use PageKeywords.newBuilder() to construct.
+    private PageKeywords(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+      super(builder);
+    }
+    private PageKeywords() {
+      link_ = "";
+      keywords_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+    }
+
+    @java.lang.Override
+    @SuppressWarnings({"unused"})
+    protected java.lang.Object newInstance(
+        UnusedPrivateParameter unused) {
+      return new PageKeywords();
+    }
+
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+    getUnknownFields() {
+      return this.unknownFields;
+    }
+    private PageKeywords(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      this();
+      if (extensionRegistry == null) {
+        throw new java.lang.NullPointerException();
+      }
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            case 10: {
+              java.lang.String s = input.readStringRequireUtf8();
+
+              link_ = s;
+              break;
+            }
+            case 18: {
+              java.lang.String s = input.readStringRequireUtf8();
+              if (!((mutable_bitField0_ & 0x00000001) != 0)) {
+                keywords_ = new com.google.protobuf.LazyStringArrayList();
+                mutable_bitField0_ |= 0x00000001;
+              }
+              keywords_.add(s);
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (com.google.protobuf.UninitializedMessageException e) {
+        throw e.asInvalidProtocolBufferException().setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e).setUnfinishedMessage(this);
+      } finally {
+        if (((mutable_bitField0_ & 0x00000001) != 0)) {
+          keywords_ = keywords_.getUnmodifiableView();
+        }
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return ir.ac.sbu.model.Models.internal_static_ir_ac_sbu_model_PageKeywords_descriptor;
+    }
+
+    @java.lang.Override
+    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return ir.ac.sbu.model.Models.internal_static_ir_ac_sbu_model_PageKeywords_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              ir.ac.sbu.model.Models.PageKeywords.class, ir.ac.sbu.model.Models.PageKeywords.Builder.class);
+    }
+
+    public static final int LINK_FIELD_NUMBER = 1;
+    private volatile java.lang.Object link_;
+    /**
+     * <code>string link = 1;</code>
+     * @return The link.
+     */
+    @java.lang.Override
+    public java.lang.String getLink() {
+      java.lang.Object ref = link_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        link_ = s;
+        return s;
+      }
+    }
+    /**
+     * <code>string link = 1;</code>
+     * @return The bytes for link.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getLinkBytes() {
+      java.lang.Object ref = link_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        link_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int KEYWORDS_FIELD_NUMBER = 2;
+    private com.google.protobuf.LazyStringList keywords_;
+    /**
+     * <code>repeated string keywords = 2;</code>
+     * @return A list containing the keywords.
+     */
+    public com.google.protobuf.ProtocolStringList
+        getKeywordsList() {
+      return keywords_;
+    }
+    /**
+     * <code>repeated string keywords = 2;</code>
+     * @return The count of keywords.
+     */
+    public int getKeywordsCount() {
+      return keywords_.size();
+    }
+    /**
+     * <code>repeated string keywords = 2;</code>
+     * @param index The index of the element to return.
+     * @return The keywords at the given index.
+     */
+    public java.lang.String getKeywords(int index) {
+      return keywords_.get(index);
+    }
+    /**
+     * <code>repeated string keywords = 2;</code>
+     * @param index The index of the value to return.
+     * @return The bytes of the keywords at the given index.
+     */
+    public com.google.protobuf.ByteString
+        getKeywordsBytes(int index) {
+      return keywords_.getByteString(index);
+    }
+
+    private byte memoizedIsInitialized = -1;
+    @java.lang.Override
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    @java.lang.Override
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(link_)) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, link_);
+      }
+      for (int i = 0; i < keywords_.size(); i++) {
+        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, keywords_.getRaw(i));
+      }
+      unknownFields.writeTo(output);
+    }
+
+    @java.lang.Override
+    public int getSerializedSize() {
+      int size = memoizedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (!com.google.protobuf.GeneratedMessageV3.isStringEmpty(link_)) {
+        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, link_);
+      }
+      {
+        int dataSize = 0;
+        for (int i = 0; i < keywords_.size(); i++) {
+          dataSize += computeStringSizeNoTag(keywords_.getRaw(i));
+        }
+        size += dataSize;
+        size += 1 * getKeywordsList().size();
+      }
+      size += unknownFields.getSerializedSize();
+      memoizedSize = size;
+      return size;
+    }
+
+    @java.lang.Override
+    public boolean equals(final java.lang.Object obj) {
+      if (obj == this) {
+       return true;
+      }
+      if (!(obj instanceof ir.ac.sbu.model.Models.PageKeywords)) {
+        return super.equals(obj);
+      }
+      ir.ac.sbu.model.Models.PageKeywords other = (ir.ac.sbu.model.Models.PageKeywords) obj;
+
+      if (!getLink()
+          .equals(other.getLink())) return false;
+      if (!getKeywordsList()
+          .equals(other.getKeywordsList())) return false;
+      if (!unknownFields.equals(other.unknownFields)) return false;
+      return true;
+    }
+
+    @java.lang.Override
+    public int hashCode() {
+      if (memoizedHashCode != 0) {
+        return memoizedHashCode;
+      }
+      int hash = 41;
+      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (37 * hash) + LINK_FIELD_NUMBER;
+      hash = (53 * hash) + getLink().hashCode();
+      if (getKeywordsCount() > 0) {
+        hash = (37 * hash) + KEYWORDS_FIELD_NUMBER;
+        hash = (53 * hash) + getKeywordsList().hashCode();
+      }
+      hash = (29 * hash) + unknownFields.hashCode();
+      memoizedHashCode = hash;
+      return hash;
+    }
+
+    public static ir.ac.sbu.model.Models.PageKeywords parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input);
+    }
+    public static ir.ac.sbu.model.Models.PageKeywords parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageV3
+          .parseWithIOException(PARSER, input, extensionRegistry);
+    }
+
+    @java.lang.Override
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder() {
+      return DEFAULT_INSTANCE.toBuilder();
+    }
+    public static Builder newBuilder(ir.ac.sbu.model.Models.PageKeywords prototype) {
+      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+    }
+    @java.lang.Override
+    public Builder toBuilder() {
+      return this == DEFAULT_INSTANCE
+          ? new Builder() : new Builder().mergeFrom(this);
+    }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code ir.ac.sbu.model.PageKeywords}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:ir.ac.sbu.model.PageKeywords)
+        ir.ac.sbu.model.Models.PageKeywordsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return ir.ac.sbu.model.Models.internal_static_ir_ac_sbu_model_PageKeywords_descriptor;
+      }
+
+      @java.lang.Override
+      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return ir.ac.sbu.model.Models.internal_static_ir_ac_sbu_model_PageKeywords_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                ir.ac.sbu.model.Models.PageKeywords.class, ir.ac.sbu.model.Models.PageKeywords.Builder.class);
+      }
+
+      // Construct using ir.ac.sbu.model.Models.PageKeywords.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessageV3
+                .alwaysUseFieldBuilders) {
+        }
+      }
+      @java.lang.Override
+      public Builder clear() {
+        super.clear();
+        link_ = "";
+
+        keywords_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        return this;
+      }
+
+      @java.lang.Override
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return ir.ac.sbu.model.Models.internal_static_ir_ac_sbu_model_PageKeywords_descriptor;
+      }
+
+      @java.lang.Override
+      public ir.ac.sbu.model.Models.PageKeywords getDefaultInstanceForType() {
+        return ir.ac.sbu.model.Models.PageKeywords.getDefaultInstance();
+      }
+
+      @java.lang.Override
+      public ir.ac.sbu.model.Models.PageKeywords build() {
+        ir.ac.sbu.model.Models.PageKeywords result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      @java.lang.Override
+      public ir.ac.sbu.model.Models.PageKeywords buildPartial() {
+        ir.ac.sbu.model.Models.PageKeywords result = new ir.ac.sbu.model.Models.PageKeywords(this);
+        int from_bitField0_ = bitField0_;
+        result.link_ = link_;
+        if (((bitField0_ & 0x00000001) != 0)) {
+          keywords_ = keywords_.getUnmodifiableView();
+          bitField0_ = (bitField0_ & ~0x00000001);
+        }
+        result.keywords_ = keywords_;
+        onBuilt();
+        return result;
+      }
+
+      @java.lang.Override
+      public Builder clone() {
+        return super.clone();
+      }
+      @java.lang.Override
+      public Builder setField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.setField(field, value);
+      }
+      @java.lang.Override
+      public Builder clearField(
+          com.google.protobuf.Descriptors.FieldDescriptor field) {
+        return super.clearField(field);
+      }
+      @java.lang.Override
+      public Builder clearOneof(
+          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
+        return super.clearOneof(oneof);
+      }
+      @java.lang.Override
+      public Builder setRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          int index, java.lang.Object value) {
+        return super.setRepeatedField(field, index, value);
+      }
+      @java.lang.Override
+      public Builder addRepeatedField(
+          com.google.protobuf.Descriptors.FieldDescriptor field,
+          java.lang.Object value) {
+        return super.addRepeatedField(field, value);
+      }
+      @java.lang.Override
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof ir.ac.sbu.model.Models.PageKeywords) {
+          return mergeFrom((ir.ac.sbu.model.Models.PageKeywords)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(ir.ac.sbu.model.Models.PageKeywords other) {
+        if (other == ir.ac.sbu.model.Models.PageKeywords.getDefaultInstance()) return this;
+        if (!other.getLink().isEmpty()) {
+          link_ = other.link_;
+          onChanged();
+        }
+        if (!other.keywords_.isEmpty()) {
+          if (keywords_.isEmpty()) {
+            keywords_ = other.keywords_;
+            bitField0_ = (bitField0_ & ~0x00000001);
+          } else {
+            ensureKeywordsIsMutable();
+            keywords_.addAll(other.keywords_);
+          }
+          onChanged();
+        }
+        this.mergeUnknownFields(other.unknownFields);
+        onChanged();
+        return this;
+      }
+
+      @java.lang.Override
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      @java.lang.Override
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        ir.ac.sbu.model.Models.PageKeywords parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (ir.ac.sbu.model.Models.PageKeywords) e.getUnfinishedMessage();
+          throw e.unwrapIOException();
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object link_ = "";
+      /**
+       * <code>string link = 1;</code>
+       * @return The link.
+       */
+      public java.lang.String getLink() {
+        java.lang.Object ref = link_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          link_ = s;
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>string link = 1;</code>
+       * @return The bytes for link.
+       */
+      public com.google.protobuf.ByteString
+          getLinkBytes() {
+        java.lang.Object ref = link_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          link_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>string link = 1;</code>
+       * @param value The link to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLink(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  
+        link_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string link = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearLink() {
+        
+        link_ = getDefaultInstance().getLink();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>string link = 1;</code>
+       * @param value The bytes for link to set.
+       * @return This builder for chaining.
+       */
+      public Builder setLinkBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        
+        link_ = value;
+        onChanged();
+        return this;
+      }
+
+      private com.google.protobuf.LazyStringList keywords_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+      private void ensureKeywordsIsMutable() {
+        if (!((bitField0_ & 0x00000001) != 0)) {
+          keywords_ = new com.google.protobuf.LazyStringArrayList(keywords_);
+          bitField0_ |= 0x00000001;
+         }
+      }
+      /**
+       * <code>repeated string keywords = 2;</code>
+       * @return A list containing the keywords.
+       */
+      public com.google.protobuf.ProtocolStringList
+          getKeywordsList() {
+        return keywords_.getUnmodifiableView();
+      }
+      /**
+       * <code>repeated string keywords = 2;</code>
+       * @return The count of keywords.
+       */
+      public int getKeywordsCount() {
+        return keywords_.size();
+      }
+      /**
+       * <code>repeated string keywords = 2;</code>
+       * @param index The index of the element to return.
+       * @return The keywords at the given index.
+       */
+      public java.lang.String getKeywords(int index) {
+        return keywords_.get(index);
+      }
+      /**
+       * <code>repeated string keywords = 2;</code>
+       * @param index The index of the value to return.
+       * @return The bytes of the keywords at the given index.
+       */
+      public com.google.protobuf.ByteString
+          getKeywordsBytes(int index) {
+        return keywords_.getByteString(index);
+      }
+      /**
+       * <code>repeated string keywords = 2;</code>
+       * @param index The index to set the value at.
+       * @param value The keywords to set.
+       * @return This builder for chaining.
+       */
+      public Builder setKeywords(
+          int index, java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureKeywordsIsMutable();
+        keywords_.set(index, value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string keywords = 2;</code>
+       * @param value The keywords to add.
+       * @return This builder for chaining.
+       */
+      public Builder addKeywords(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  ensureKeywordsIsMutable();
+        keywords_.add(value);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string keywords = 2;</code>
+       * @param values The keywords to add.
+       * @return This builder for chaining.
+       */
+      public Builder addAllKeywords(
+          java.lang.Iterable<java.lang.String> values) {
+        ensureKeywordsIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, keywords_);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string keywords = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearKeywords() {
+        keywords_ = com.google.protobuf.LazyStringArrayList.EMPTY;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>repeated string keywords = 2;</code>
+       * @param value The bytes of the keywords to add.
+       * @return This builder for chaining.
+       */
+      public Builder addKeywordsBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  checkByteStringIsUtf8(value);
+        ensureKeywordsIsMutable();
+        keywords_.add(value);
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
+      public final Builder setUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.setUnknownFields(unknownFields);
+      }
+
+      @java.lang.Override
+      public final Builder mergeUnknownFields(
+          final com.google.protobuf.UnknownFieldSet unknownFields) {
+        return super.mergeUnknownFields(unknownFields);
+      }
+
+
+      // @@protoc_insertion_point(builder_scope:ir.ac.sbu.model.PageKeywords)
+    }
+
+    // @@protoc_insertion_point(class_scope:ir.ac.sbu.model.PageKeywords)
+    private static final ir.ac.sbu.model.Models.PageKeywords DEFAULT_INSTANCE;
+    static {
+      DEFAULT_INSTANCE = new ir.ac.sbu.model.Models.PageKeywords();
+    }
+
+    public static ir.ac.sbu.model.Models.PageKeywords getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static final com.google.protobuf.Parser<PageKeywords>
+        PARSER = new com.google.protobuf.AbstractParser<PageKeywords>() {
+      @java.lang.Override
+      public PageKeywords parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PageKeywords(input, extensionRegistry);
+      }
+    };
+
+    public static com.google.protobuf.Parser<PageKeywords> parser() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PageKeywords> getParserForType() {
+      return PARSER;
+    }
+
+    @java.lang.Override
+    public ir.ac.sbu.model.Models.PageKeywords getDefaultInstanceForType() {
+      return DEFAULT_INSTANCE;
+    }
+
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_ir_ac_sbu_model_Page_descriptor;
   private static final 
@@ -1684,6 +2474,11 @@ public final class Models {
   private static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_ir_ac_sbu_model_Anchor_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_ir_ac_sbu_model_PageKeywords_descriptor;
+  private static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_ir_ac_sbu_model_PageKeywords_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1696,7 +2491,8 @@ public final class Models {
       "\n\014Models.proto\022\017ir.ac.sbu.model\"6\n\004Page\022" +
       "\014\n\004link\030\001 \001(\t\022\017\n\007content\030\002 \001(\t\022\017\n\007anchor" +
       "s\030\003 \003(\t\"-\n\006Anchor\022\016\n\006source\030\001 \001(\t\022\023\n\013des" +
-      "tination\030\002 \001(\tb\006proto3"
+      "tination\030\002 \001(\t\".\n\014PageKeywords\022\014\n\004link\030\001" +
+      " \001(\t\022\020\n\010keywords\030\002 \003(\tb\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -1714,6 +2510,12 @@ public final class Models {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ir_ac_sbu_model_Anchor_descriptor,
         new java.lang.String[] { "Source", "Destination", });
+    internal_static_ir_ac_sbu_model_PageKeywords_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_ir_ac_sbu_model_PageKeywords_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_ir_ac_sbu_model_PageKeywords_descriptor,
+        new java.lang.String[] { "Link", "Keywords", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -61,7 +61,7 @@ public class LinkSender {
             senderThread.join();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            throw new AssertionError("Unexpected interrupt while waiting for link sender closing");
+            logger.error("Unexpected interrupt", e);
         }
         kafkaProducer.close();
         logger.info("Link sender stopped successfully");
