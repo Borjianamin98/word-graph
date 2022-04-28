@@ -2,12 +2,12 @@ package ir.ac.sbu.keyword.extractor.components;
 
 import ir.ac.sbu.keyword.extractor.config.ApplicationConfigs;
 import ir.ac.sbu.keyword.extractor.config.ApplicationConfigs.KeywordExtractorConfigs;
+import ir.ac.sbu.keyword.extractor.model.YakeSingleResponseDto;
+import ir.ac.sbu.keyword.extractor.service.YakeService;
 import ir.ac.sbu.model.Models.Page;
 import ir.ac.sbu.model.Models.PageKeywords;
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.stream.Collectors;
@@ -22,14 +22,17 @@ public class KeywordExtractor {
     private static final Logger logger = LoggerFactory.getLogger(KeywordExtractor.class);
 
     private final Thread keywordExtractorThread;
+    private final KeywordExtractorConfigs keywordExtractorConfigs;
     private final BlockingQueue<PageKeywords> extractedPageKeywordsQueue;
+    private final YakeService yakeService;
 
     private volatile boolean running = false;
 
-    public KeywordExtractor(ApplicationConfigs applicationConfigs, PageReader pageReader) {
-        KeywordExtractorConfigs keywordExtractorConfigs = applicationConfigs.getKeywordExtractorConfigs();
+    public KeywordExtractor(ApplicationConfigs applicationConfigs, PageReader pageReader, YakeService yakeService) {
+        this.keywordExtractorConfigs = applicationConfigs.getKeywordExtractorConfigs();
         this.extractedPageKeywordsQueue = new ArrayBlockingQueue<>(
                 keywordExtractorConfigs.getInMemoryPageKeywordsQueueSize());
+        this.yakeService = yakeService;
 
         running = true;
         this.keywordExtractorThread = new Thread(() -> {
@@ -37,9 +40,9 @@ public class KeywordExtractor {
                 try {
                     Page page = pageReader.getNextPage();
                     processPage(page);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException | IOException e) {
                     if (running) {
-                        throw new AssertionError("Unexpected interrupt while processing pages", e);
+                        throw new AssertionError("Unexpected exception while processing pages", e);
                     }
                     Thread.currentThread().interrupt();
                     break;
@@ -67,26 +70,30 @@ public class KeywordExtractor {
         return extractedPageKeywordsQueue.take();
     }
 
-    private void processPage(Page page) throws InterruptedException {
+    private void processPage(Page page) throws InterruptedException, IOException {
         logger.info("Extract keywords of page: link = {}", page.getLink());
 
-        // TODO: Implement better method
-        Map<String, Integer> tokensCount = new HashMap<>();
-        String pageContent = page.getContent();
-        for (String token : pageContent.split("\\s+")) {
-            String word = token.toLowerCase();
-            if (tokensCount.containsKey(word)) {
-                tokensCount.put(word, tokensCount.get(word) + 1);
-            } else {
-                tokensCount.put(word, 1);
-            }
-        }
-        List<String> topTokens = tokensCount.entrySet().stream().sorted(Entry.comparingByValue())
-                .map(Entry::getKey).limit(5).collect(Collectors.toList());
+        List<YakeSingleResponseDto> extractedKeywords = yakeService.getKeywords(page.getContent());
+        List<String> topKeywords = extractedKeywords.stream()
+                .filter(entry ->
+                        containsNoneOf(entry.getKeyword(), keywordExtractorConfigs.getDiscardedCharacterSequences()))
+                .sorted((o1, o2) -> Double.compare(o2.getScore(), o1.getScore())) // Reverse sort
+                .map(YakeSingleResponseDto::getKeyword)
+                .limit(keywordExtractorConfigs.getMaxKeywordsPerPage())
+                .collect(Collectors.toList());
 
         extractedPageKeywordsQueue.put(PageKeywords.newBuilder()
                 .setLink(page.getLink())
-                .addAllKeywords(topTokens)
+                .addAllKeywords(topKeywords)
                 .build());
+    }
+
+    private static boolean containsNoneOf(String content, List<String> strings) {
+        for (String string : strings) {
+            if (content.contains(string)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

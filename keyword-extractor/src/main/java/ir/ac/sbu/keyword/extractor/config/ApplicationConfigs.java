@@ -1,5 +1,6 @@
 package ir.ac.sbu.keyword.extractor.config;
 
+import java.util.List;
 import java.util.Properties;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -15,6 +16,7 @@ public class ApplicationConfigs {
 
     private final KafkaConfigs kafkaConfigs = new KafkaConfigs();
     private final KeywordExtractorConfigs keywordExtractorConfigs = new KeywordExtractorConfigs();
+    private final YakeServiceConfigs yakeServiceConfigs = new YakeServiceConfigs();
 
     public KafkaConfigs getKafkaConfigs() {
         return kafkaConfigs;
@@ -22,6 +24,10 @@ public class ApplicationConfigs {
 
     public KeywordExtractorConfigs getKeywordExtractorConfigs() {
         return keywordExtractorConfigs;
+    }
+
+    public YakeServiceConfigs getYakeServiceConfigs() {
+        return yakeServiceConfigs;
     }
 
     public static class KafkaConfigs {
@@ -86,6 +92,8 @@ public class ApplicationConfigs {
 
         private int inMemoryPageQueueSize;
         private int inMemoryPageKeywordsQueueSize;
+        private int maxKeywordsPerPage;
+        private List<String> discardedCharacterSequences;
 
         public int getInMemoryPageQueueSize() {
             return inMemoryPageQueueSize;
@@ -101,6 +109,81 @@ public class ApplicationConfigs {
 
         public void setInMemoryPageKeywordsQueueSize(int inMemoryPageKeywordsQueueSize) {
             this.inMemoryPageKeywordsQueueSize = inMemoryPageKeywordsQueueSize;
+        }
+
+        public int getMaxKeywordsPerPage() {
+            return maxKeywordsPerPage;
+        }
+
+        public void setMaxKeywordsPerPage(int maxKeywordsPerPage) {
+            this.maxKeywordsPerPage = maxKeywordsPerPage;
+        }
+
+        public List<String> getDiscardedCharacterSequences() {
+            return discardedCharacterSequences;
+        }
+
+        public void setDiscardedCharacterSequences(List<String> discardedCharacterSequences) {
+            this.discardedCharacterSequences = discardedCharacterSequences;
+        }
+    }
+
+    public static class YakeServiceConfigs {
+
+        private String baseUri;
+        private int clientConnectTimeoutMillis;
+        private int clientReadTimeoutMillis;
+
+        private String language;
+        private int maxNgramSize;
+        private int maxNumberOfKeywords;
+
+        public String getBaseUri() {
+            return baseUri;
+        }
+
+        public void setBaseUri(String baseUri) {
+            this.baseUri = baseUri;
+        }
+
+        public int getClientConnectTimeoutMillis() {
+            return clientConnectTimeoutMillis;
+        }
+
+        public void setClientConnectTimeoutMillis(int clientConnectTimeoutMillis) {
+            this.clientConnectTimeoutMillis = clientConnectTimeoutMillis;
+        }
+
+        public int getClientReadTimeoutMillis() {
+            return clientReadTimeoutMillis;
+        }
+
+        public void setClientReadTimeoutMillis(int clientReadTimeoutMillis) {
+            this.clientReadTimeoutMillis = clientReadTimeoutMillis;
+        }
+
+        public String getLanguage() {
+            return language;
+        }
+
+        public void setLanguage(String language) {
+            this.language = language;
+        }
+
+        public int getMaxNgramSize() {
+            return maxNgramSize;
+        }
+
+        public void setMaxNgramSize(int maxNgramSize) {
+            this.maxNgramSize = maxNgramSize;
+        }
+
+        public int getMaxNumberOfKeywords() {
+            return maxNumberOfKeywords;
+        }
+
+        public void setMaxNumberOfKeywords(int maxNumberOfKeywords) {
+            this.maxNumberOfKeywords = maxNumberOfKeywords;
         }
     }
 }

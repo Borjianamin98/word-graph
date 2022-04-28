@@ -38,8 +38,8 @@ public class GraphProducer {
         Dataset<Row> keywordsDataset = sparkSession.read().parquet(
                 hdfsDefaultFs + applicationConfigs.getKeywordsParquetDirectory());
 
-        anchorsDataset.show(false);
-        keywordsDataset.show(false);
+        anchorsDataset.show(1000, false);
+        keywordsDataset.show(1000, false);
     }
 
     @PreDestroy

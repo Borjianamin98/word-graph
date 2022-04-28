@@ -7,4 +7,14 @@ app:
   keyword-extractor-configs:
     in-memory-page-queue-size: 100
     in-memory-page-keywords-queue-size: 100
-
+    max-keywords-per-page: 10
+    discarded-character-sequences:
+      - "?"
+      - "?"
+  yake-service-configs:
+    base-uri: "http://localhost:5000/yake"
+    client-connect-timeout-millis: 10000
+    client-read-timeout-millis: 10000
+    language: "en"
+    max-ngram-size: 1
+    max-number-of-keywords: 20
