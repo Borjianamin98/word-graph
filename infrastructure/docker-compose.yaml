@@ -141,6 +141,13 @@ services:
     volumes:
       - mongodb_data:/data/db
 
+  yake-server:
+    image: yake-server:latest
+    container_name: yake-server
+    hostname: yake-server
+    ports:
+      - 5000:5000
+
 volumes:
   hadoop_namenode:
   hadoop_datanode:
