@@ -96,6 +96,10 @@ public class KeywordExtractor {
             if (content.contains(string)) {
                 return false;
             }
+            // Skip keywords if contains numbers
+            if (content.matches(".*\\d+.*")) {
+                return false;
+            }
         }
         return true;
     }

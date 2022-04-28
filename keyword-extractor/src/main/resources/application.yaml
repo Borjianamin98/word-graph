@@ -13,6 +13,12 @@ app:
       - "?"
       - "’"
       - "\""
+      - "ç"
+      - "ê"
+      - "ñ"
+      - "к"
+      - "и"
+      - "_"
   yake-service-configs:
     base-uri: "http://localhost:5000/yake"
     client-connect-timeout-millis: 10000
