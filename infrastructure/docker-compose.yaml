@@ -12,7 +12,7 @@ services:
     volumes:
       - hadoop_namenode:/dfs/name
     environment:
-      - CLUSTER_NAME=storage
+      CLUSTER_NAME: storage
     env_file:
       - ./hadoop.env
 
@@ -106,7 +106,10 @@ services:
     volumes:
       - zookeeper_data:/bitnami/zookeeper
     environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      TZ: Asia/Tehran
+      ALLOW_ANONYMOUS_LOGIN: "yes"
 
   kafka:
     image: bitnami/kafka:2.8.1
@@ -117,15 +120,18 @@ services:
     volumes:
       - kafka_data:/bitnami/kafka
     environment:
-      - KAFKA_BROKER_ID=1
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
-      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://0.0.0.0:9093
-      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
-      - KAFKA_CFG_INTER_BROKER_LISTENER_NAME=CLIENT
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      TZ: Asia/Tehran
+      KAFKA_BROKER_ID: 1
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_CFG_LISTENERS: CLIENT://:9092,EXTERNAL://0.0.0.0:9093
+      KAFKA_CFG_ADVERTISED_LISTENERS: CLIENT://kafka:9092,EXTERNAL://localhost:9093
+      KAFKA_CFG_INTER_BROKER_LISTENER_NAME: CLIENT
       # Custom configurations
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: "false"
     depends_on:
       - zookeeper
 
@@ -134,6 +140,9 @@ services:
     container_name: mongo
     hostname: mongo
     environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      TZ: Asia/Tehran
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: password
     ports:

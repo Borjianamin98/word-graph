@@ -10,7 +10,6 @@ app:
     max-keywords-per-page: 10
     discarded-character-sequences:
       - "?"
-      - "?"
   yake-service-configs:
     base-uri: "http://localhost:5000/yake"
     client-connect-timeout-millis: 10000

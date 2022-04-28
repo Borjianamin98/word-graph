@@ -1,12 +1,16 @@
 FROM library/python:3.7
 
-ENV YAKE_REPO_ADDRESS="https://github.com/LIAAD/yake.git" \
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+    TZ="Asia/Tehran" \
+    YAKE_REPO_ADDRESS="https://github.com/LIAAD/yake.git" \
     YAKE_REPO_CONTENT_BASE_URL="https://raw.githubusercontent.com/LIAAD/yake/master" \
     YAKE_REST_API_PORT=5000
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     bash \
     git \
+    tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 RUN wget "${YAKE_REPO_CONTENT_BASE_URL}/requirements.txt" -O /tmp/requirements.txt \
