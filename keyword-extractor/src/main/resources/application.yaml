@@ -8,8 +8,11 @@ app:
     in-memory-page-queue-size: 100
     in-memory-page-keywords-queue-size: 100
     max-keywords-per-page: 10
+    minimum-page-content-size: 1500
     discarded-character-sequences:
       - "?"
+      - "’"
+      - "\""
   yake-service-configs:
     base-uri: "http://localhost:5000/yake"
     client-connect-timeout-millis: 10000

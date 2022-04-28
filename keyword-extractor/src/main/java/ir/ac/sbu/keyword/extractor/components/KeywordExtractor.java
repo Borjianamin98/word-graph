@@ -71,8 +71,11 @@ public class KeywordExtractor {
     }
 
     private void processPage(Page page) throws InterruptedException, IOException {
-        logger.info("Extract keywords of page: link = {}", page.getLink());
+        if (page.getContent().length() < keywordExtractorConfigs.getMinimumPageContentSize()) {
+            logger.info("Content of page is less than configured config (ignored): {}", page.getLink());
+        }
 
+        logger.info("Extract keywords of page: link = {}", page.getLink());
         List<YakeSingleResponseDto> extractedKeywords = yakeService.getKeywords(page.getContent());
         List<String> topKeywords = extractedKeywords.stream()
                 .filter(entry ->

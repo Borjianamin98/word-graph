@@ -94,6 +94,7 @@ public class ApplicationConfigs {
         private int inMemoryPageKeywordsQueueSize;
         private int maxKeywordsPerPage;
         private List<String> discardedCharacterSequences;
+        private int minimumPageContentSize;
 
         public int getInMemoryPageQueueSize() {
             return inMemoryPageQueueSize;
@@ -125,6 +126,14 @@ public class ApplicationConfigs {
 
         public void setDiscardedCharacterSequences(List<String> discardedCharacterSequences) {
             this.discardedCharacterSequences = discardedCharacterSequences;
+        }
+
+        public int getMinimumPageContentSize() {
+            return minimumPageContentSize;
+        }
+
+        public void setMinimumPageContentSize(int minimumPageContentSize) {
+            this.minimumPageContentSize = minimumPageContentSize;
         }
     }
 
