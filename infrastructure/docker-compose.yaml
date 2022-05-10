@@ -8,7 +8,7 @@ services:
     restart: always
     ports:
       - 50070:50070
-      - 9000:9000
+      - 9100:9000
     volumes:
       - hadoop_namenode:/dfs/name
     environment:
@@ -39,7 +39,7 @@ services:
   #   hostname: resourcemanager
   #   restart: always
   #   ports:
-  #     - 8088:8088
+  #     - 9101:8088
   #   environment:
   #     SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075"
   #   env_file:
@@ -54,7 +54,7 @@ services:
   #   hostname: nodemanager
   #   restart: always
   #   ports:
-  #     - 8042:8042
+  #     - 9102:8042
   #   environment:
   #     SERVICE_PRECONDITION: "namenode:9000 namenode:50070 datanode:50075 resourcemanager:8088"
   #   env_file:
@@ -82,8 +82,8 @@ services:
     hostname: spark-master
     restart: always
     ports:
-      - "8080:8080" # Spark master web UI
-      - "7077:7077" # Spark master port for communication
+      - "9103:8080" # Spark master web UI
+      # - "7077:7077" Spark master port for communication
 
   spark-worker-1:
     image: spark-worker:latest
@@ -93,7 +93,7 @@ services:
     depends_on:
       - spark-master
     ports:
-      - "8081:8081"
+      - "9104:8081"
     environment:
       SPARK_MASTERS: spark://spark-master:7077
 
