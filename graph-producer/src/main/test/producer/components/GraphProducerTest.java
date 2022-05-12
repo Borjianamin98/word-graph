@@ -56,10 +56,10 @@ public class GraphProducerTest {
                 createStructField("destination", DataTypes.StringType, false)));
 
         List<Row> keywordsData = Arrays.asList(
-                RowFactory.create("src1", Arrays.asList("key1")),
-                RowFactory.create("src2", Arrays.asList("key2")),
-                RowFactory.create("dest1", Arrays.asList("key3")),
-                RowFactory.create("dest2", Arrays.asList("key4"))
+                RowFactory.create("src1", Arrays.asList("key1_1", "key1_2", "shared_key_1")),
+                RowFactory.create("src2", Arrays.asList("key2_1", "key2_2", "shared_key_2")),
+                RowFactory.create("dest1", Arrays.asList("key3_1", "key3_2", "shared_key_2")),
+                RowFactory.create("dest2", Arrays.asList("key4_1", "key4_2", "shared_key_1"))
         );
         StructType keywordsSchema = createStructType(Arrays.asList(
                 createStructField("link", DataTypes.StringType, false),
@@ -68,12 +68,46 @@ public class GraphProducerTest {
         Dataset<Row> anchorsDataset = sparkSession.createDataFrame(anchorsData, anchorsSchema);
         Dataset<Row> keywordsDataset = sparkSession.createDataFrame(keywordsData, keywordsSchema);
 
-        anchorsDataset.show();
-        keywordsDataset.show();
+        anchorsDataset.show(false);
+        keywordsDataset.show(false);
 
         Dataset<Row> result = GraphProducer.createGraph(sparkSession, anchorsDataset, keywordsDataset);
 
         result.show(1000, false);
+        // Expected final output
+        // +------------+------------+-----------+
+        // |from        |to          |total_count|
+        // +------------+------------+-----------+
+        // |key1_1      |shared_key_1|2          |
+        // |key1_2      |shared_key_1|2          |
+        // |key4_1      |shared_key_1|2          |
+        // |key1_1      |key1_2      |2          |
+        // |key4_2      |shared_key_1|2          |
+        // |key4_1      |key4_2      |2          |
+        // |key2_1      |shared_key_2|2          |
+        // |key3_2      |shared_key_2|2          |
+        // |key3_1      |shared_key_2|2          |
+        // |key2_2      |shared_key_2|2          |
+        // |key3_1      |key3_2      |2          |
+        // |key2_1      |key2_2      |2          |
+        // |shared_key_1|shared_key_2|2          |
+        // |key1_2      |key3_1      |1          |
+        // |key2_2      |key4_2      |1          |
+        // |key2_1      |shared_key_1|1          |
+        // |key3_2      |shared_key_1|1          |
+        // |key4_1      |shared_key_2|1          |
+        // |key2_2      |shared_key_1|1          |
+        // |key3_1      |shared_key_1|1          |
+        // |key4_2      |shared_key_2|1          |
+        // |key1_2      |shared_key_2|1          |
+        // |key2_1      |key4_1      |1          |
+        // |key1_1      |key3_2      |1          |
+        // |key2_1      |key4_2      |1          |
+        // |key1_1      |shared_key_2|1          |
+        // |key1_2      |key3_2      |1          |
+        // |key2_2      |key4_1      |1          |
+        // |key1_1      |key3_1      |1          |
+        // +------------+------------+-----------+
     }
 
 }

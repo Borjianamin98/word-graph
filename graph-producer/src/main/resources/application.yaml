@@ -1,6 +1,8 @@
 app:
   anchors-parquet-directory: /anchors-parquet
   keywords-parquet-directory: /keywords-parquet
+  maximum-graph-edges: 5000000
+  result-directory-path: /graph
   spark-configs:
     spark-master-address: spark-master:7077
     spark-configs:
@@ -9,4 +11,3 @@ app:
   hadoop-configs:
     hadoop-name-node-hostname: namenode
     hadoop-name-node-port: 9000
-

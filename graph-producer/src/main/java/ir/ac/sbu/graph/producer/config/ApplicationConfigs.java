@@ -12,6 +12,8 @@ public class ApplicationConfigs {
 
     private String anchorsParquetDirectory;
     private String keywordsParquetDirectory;
+    private int maximumGraphEdges;
+    private String resultDirectoryPath;
 
     private final HadoopConfigs hadoopConfigs = new HadoopConfigs();
     private final SparkConfigs sparkConfigs = new SparkConfigs();
@@ -30,6 +32,22 @@ public class ApplicationConfigs {
 
     public void setKeywordsParquetDirectory(String keywordsParquetDirectory) {
         this.keywordsParquetDirectory = keywordsParquetDirectory;
+    }
+
+    public int getMaximumGraphEdges() {
+        return maximumGraphEdges;
+    }
+
+    public void setMaximumGraphEdges(int maximumGraphEdges) {
+        this.maximumGraphEdges = maximumGraphEdges;
+    }
+
+    public String getResultDirectoryPath() {
+        return resultDirectoryPath;
+    }
+
+    public void setResultDirectoryPath(String resultDirectoryPath) {
+        this.resultDirectoryPath = resultDirectoryPath;
     }
 
     public HadoopConfigs getHadoopConfigs() {
