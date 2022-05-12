@@ -35,6 +35,7 @@
         <kafka.parquet.writer.version>2.0.0</kafka.parquet.writer.version>
         <dns.cache.manipulator.version>1.7.1</dns.cache.manipulator.version>
         <spark.version>3.2.1</spark.version>
+        <junit.jupiter.version>5.8.2</junit.jupiter.version>
     </properties>
 
     <repositories>
@@ -45,6 +46,13 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Cleanup dependencies-->
         <dependency>
             <groupId>com.github.sahabpardaz</groupId>
