@@ -36,7 +36,7 @@ public class LinkReader {
         this.linksQueue = new ArrayBlockingQueue<>(applicationConfigs.getCrawlerConfigs().getInMemoryLinkQueueSize());
         this.kafkaConfigs = applicationConfigs.getKafkaConfigs();
 
-        kafkaConsumer = new KafkaConsumer<>(kafkaConfigs.getConsumerProperties());
+        kafkaConsumer = new KafkaConsumer<>(kafkaConfigs.getConsumerProperties(true));
         kafkaConsumer.subscribe(Collections.singletonList(kafkaConfigs.getLinksTopicName()));
 
         running = true;

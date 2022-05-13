@@ -4,6 +4,8 @@ import ir.ac.sbu.graph.producer.config.ApplicationConfigs;
 import ir.ac.sbu.graph.producer.config.ApplicationConfigs.HadoopConfigs;
 import ir.ac.sbu.graph.producer.config.ApplicationConfigs.SparkConfigs;
 import java.nio.charset.StandardCharsets;
+import java.util.HashSet;
+import java.util.List;
 import javax.annotation.PreDestroy;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
@@ -40,8 +42,9 @@ public class GraphProducer {
         Dataset<Row> keywordsDataset = sparkSession.read().parquet(
                 hdfsDefaultFs + applicationConfigs.getKeywordsParquetDirectory());
 
-        createGraph(sparkSession, anchorsDataset, keywordsDataset)
-                .limit(applicationConfigs.getMaximumGraphEdges())
+        Dataset<Row> graph = createGraph(sparkSession, anchorsDataset, keywordsDataset);
+
+        graph.limit(applicationConfigs.getMaximumGraphEdges())
                 // Use 'coalesce' to avoid creation of multiple result files
                 .coalesce(1)
                 .write()
@@ -53,22 +56,29 @@ public class GraphProducer {
             Dataset<Row> anchorsDataset, Dataset<Row> keywordsDataset) {
         // Because each page keywords have relation too, we create a logical link between a page and its own
         // link. It will added to the list of real crawled links.
-        Dataset<Row> pageOwnLink = anchorsDataset
-                .select(functions.col("source")).distinct()
-                .union(anchorsDataset.select(functions.col("destination").as("source")).distinct())
-                .withColumn("destination", functions.col("source"));
+        Dataset<Row> srcLinks = anchorsDataset.select(functions.col("source").as("source")).distinct();
+        Dataset<Row> destLinks = anchorsDataset.select(functions.col("destination").as("source")).distinct();
+        Dataset<Row> pageOwnLink = srcLinks.union(destLinks).withColumn("destination", functions.col("source"));
 
-        anchorsDataset.union(pageOwnLink).createOrReplaceTempView("anchors");
-        keywordsDataset.createOrReplaceTempView("keywords");
+        // Because of Kafka config (at least delivery), we may have duplicate links.
+        // We remove them and keep just one of them
+        Dataset<Row> allAnchorsDataset = anchorsDataset.union(pageOwnLink).dropDuplicates("source", "destination");
+        Dataset<Row> uniqueKeywordsDataset = keywordsDataset.dropDuplicates("link");
 
-        Dataset<Row> result = sparkSession.sql("SELECT "
-                + "src.keywords as src_keywords, "
-                + "dest.keywords as dest_keywords " +
-                "FROM anchors AS e " +
-                "JOIN keywords AS src ON e.source = src.link " +
-                "JOIN keywords AS dest ON e.destination = dest.link");
+        Dataset<Row> pageKeywordsRelation = allAnchorsDataset
+                .join(uniqueKeywordsDataset.as("join_1"),
+                        functions.col("join_1.link").equalTo(functions.col("destination")))
+                .join(uniqueKeywordsDataset.as("join_2"),
+                        functions.col("join_2.link").equalTo(functions.col("source")))
+                .select(
+                        functions.col("join_1.keywords").as("src_keywords"),
+                        functions.col("join_2.keywords").as("dest_keywords")
+                );
 
-        Dataset<Row> keywordsMatching = result.withColumn("keyword_1", functions.explode(functions.col("src_keywords")))
+        pageKeywordsRelation.show(30, false);
+
+        Dataset<Row> keywordsMatching = pageKeywordsRelation
+                .withColumn("keyword_1", functions.explode(functions.col("src_keywords")))
                 .withColumn("keyword_2", functions.explode(functions.col("dest_keywords")))
                 .select("keyword_1", "keyword_2")
                 .filter(functions.col("keyword_1").notEqual(functions.col("keyword_2")));
@@ -82,6 +92,8 @@ public class GraphProducer {
                 .groupBy("from", "to")
                 .agg(functions.sum("count").alias("total_count"))
                 .sort(functions.desc("total_count"));
+
+        keywordsMatchingAggregated.show(30, false);
 
         return keywordsMatchingAggregated;
     }
