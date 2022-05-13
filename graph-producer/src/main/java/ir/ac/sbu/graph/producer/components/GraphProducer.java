@@ -10,6 +10,7 @@ import javax.annotation.PreDestroy;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.functions;
 import org.slf4j.Logger;
@@ -48,8 +49,9 @@ public class GraphProducer {
                 // Use 'coalesce' to avoid creation of multiple result files
                 .coalesce(1)
                 .write()
+                .mode(SaveMode.Overwrite)
                 .option("encoding", StandardCharsets.UTF_8.name())
-                .csv(applicationConfigs.getResultDirectoryPath());
+                .csv(hdfsDefaultFs + applicationConfigs.getResultDirectoryPath());
     }
 
     public static Dataset<Row> createGraph(SparkSession sparkSession,

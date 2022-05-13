@@ -1,4 +1,4 @@
-package producer.components;
+package ir.ac.sbu.graph.producer.components;
 
 import static org.apache.spark.sql.types.DataTypes.createArrayType;
 import static org.apache.spark.sql.types.DataTypes.createStructField;
