@@ -3,10 +3,13 @@ package ir.ac.sbu.graph.producer.components;
 import ir.ac.sbu.graph.producer.config.ApplicationConfigs;
 import ir.ac.sbu.graph.producer.config.ApplicationConfigs.HadoopConfigs;
 import ir.ac.sbu.graph.producer.config.ApplicationConfigs.SparkConfigs;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
-import java.util.List;
 import javax.annotation.PreDestroy;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.hdfs.DFSConfigKeys;
+import org.apache.hadoop.hdfs.HdfsConfiguration;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -28,8 +31,11 @@ public class GraphProducer {
         HadoopConfigs hadoopConfigs = applicationConfigs.getHadoopConfigs();
         SparkConfigs sparkConfigs = applicationConfigs.getSparkConfigs();
 
-        String hdfsDefaultFs = String.format("hdfs://%s:%d",
-                hadoopConfigs.getHadoopNameNodeHostname(), hadoopConfigs.getHadoopNameNodePort());
+        HdfsConfiguration hdfsConfiguration = new HdfsConfiguration();
+        hdfsConfiguration.set(DFSConfigKeys.FS_DEFAULT_NAME_KEY,
+                String.format("hdfs://%s:%d",
+                        hadoopConfigs.getHadoopNameNodeHostname(), hadoopConfigs.getHadoopNameNodePort()));
+
         SparkConf sparkConf = new SparkConf();
         sparkConfigs.getSparkConfigs().forEach(sparkConf::set);
         sparkSession = SparkSession.builder()
@@ -37,25 +43,32 @@ public class GraphProducer {
                 .master("spark://" + sparkConfigs.getSparkMasterAddress())
                 .config(sparkConf)
                 .getOrCreate();
+        sparkSession.sparkContext().hadoopConfiguration().addResource(hdfsConfiguration);
 
-        Dataset<Row> anchorsDataset = sparkSession.read().parquet(
-                hdfsDefaultFs + applicationConfigs.getAnchorsParquetDirectory());
-        Dataset<Row> keywordsDataset = sparkSession.read().parquet(
-                hdfsDefaultFs + applicationConfigs.getKeywordsParquetDirectory());
+        Dataset<Row> anchorsDataset = sparkSession.read().parquet(applicationConfigs.getAnchorsParquetDirectory());
+        Dataset<Row> keywordsDataset = sparkSession.read().parquet(applicationConfigs.getKeywordsParquetDirectory());
 
-        Dataset<Row> graph = createGraph(sparkSession, anchorsDataset, keywordsDataset);
+        Dataset<Row> graph = createGraph(anchorsDataset, keywordsDataset);
 
+        String hdfsResultDirectory = applicationConfigs.getResultDirectoryPath();
         graph.limit(applicationConfigs.getMaximumGraphEdges())
                 // Use 'coalesce' to avoid creation of multiple result files
                 .coalesce(1)
                 .write()
                 .mode(SaveMode.Overwrite)
                 .option("encoding", StandardCharsets.UTF_8.name())
-                .csv(hdfsDefaultFs + applicationConfigs.getResultDirectoryPath());
+                .csv(hdfsResultDirectory);
+
+        try (FileSystem fileSystem = FileSystem.get(hdfsConfiguration)) {
+            Path resultFilePath = fileSystem.globStatus(new Path(hdfsResultDirectory + "/part*"))[0]
+                    .getPath();
+            fileSystem.rename(resultFilePath, new Path(hdfsResultDirectory + "/result.csv"));
+        } catch (IOException e) {
+            throw new AssertionError("Unexpected IO exception", e);
+        }
     }
 
-    public static Dataset<Row> createGraph(SparkSession sparkSession,
-            Dataset<Row> anchorsDataset, Dataset<Row> keywordsDataset) {
+    public static Dataset<Row> createGraph(Dataset<Row> anchorsDataset, Dataset<Row> keywordsDataset) {
         // Because each page keywords have relation too, we create a logical link between a page and its own
         // link. It will added to the list of real crawled links.
         Dataset<Row> srcLinks = anchorsDataset.select(functions.col("source").as("source")).distinct();

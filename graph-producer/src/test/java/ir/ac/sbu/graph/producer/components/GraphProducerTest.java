@@ -4,7 +4,6 @@ import static org.apache.spark.sql.types.DataTypes.createArrayType;
 import static org.apache.spark.sql.types.DataTypes.createStructField;
 import static org.apache.spark.sql.types.DataTypes.createStructType;
 
-import ir.ac.sbu.graph.producer.components.GraphProducer;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.spark.SparkConf;
@@ -73,7 +72,7 @@ public class GraphProducerTest {
         anchorsDataset.show(false);
         keywordsDataset.show(false);
 
-        Dataset<Row> result = GraphProducer.createGraph(sparkSession, anchorsDataset, keywordsDataset);
+        Dataset<Row> result = GraphProducer.createGraph(anchorsDataset, keywordsDataset);
 
         result.show(1000, false);
     }

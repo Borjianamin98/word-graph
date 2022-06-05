@@ -33,7 +33,7 @@ public class AnchorParquetWriter {
         HdfsConfiguration hdfsConfiguration = new HdfsConfiguration();
         hdfsConfiguration.set(DFSConfigKeys.FS_DEFAULT_NAME_KEY,
                 String.format("hdfs://%s:%d",
-                        hadoopConfigs.getHadoopDataNodeHostname(), hadoopConfigs.getHadoopNameNodePort()));
+                        hadoopConfigs.getHadoopNameNodeHostname(), hadoopConfigs.getHadoopNameNodePort()));
         if (!hadoopConfigs.isInHadoopNetwork()) {
             // Fix issue of connecting to hadoop infrastructure from outside of docker network
             // Related link: https://github.com/big-data-europe/docker-hadoop/issues/98#issuecomment-919815981
