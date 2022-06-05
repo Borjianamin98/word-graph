@@ -20,3 +20,6 @@ target/
 
 ### VS Code ###
 .vscode/
+
+### HTML files ###
+**/*.html

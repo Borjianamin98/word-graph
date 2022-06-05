@@ -57,6 +57,7 @@ public class GraphProducer {
                 .write()
                 .mode(SaveMode.Overwrite)
                 .option("encoding", StandardCharsets.UTF_8.name())
+                .option("header", "true")
                 .csv(hdfsResultDirectory);
 
         try (FileSystem fileSystem = FileSystem.get(hdfsConfiguration)) {
@@ -90,7 +91,7 @@ public class GraphProducer {
                         functions.col("join_2.keywords").as("dest_keywords")
                 );
 
-        pageKeywordsRelation.show(30, false);
+//        pageKeywordsRelation.show(30, false);
 
         Dataset<Row> keywordsMatching = pageKeywordsRelation
                 .withColumn("keyword_1", functions.explode(functions.col("src_keywords")))
@@ -108,7 +109,7 @@ public class GraphProducer {
                 .agg(functions.sum("count").alias("total_count"))
                 .sort(functions.desc("total_count"));
 
-        keywordsMatchingAggregated.show(30, false);
+//        keywordsMatchingAggregated.show(30, false);
 
         return keywordsMatchingAggregated;
     }
