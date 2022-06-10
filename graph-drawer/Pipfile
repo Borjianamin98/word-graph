@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-numpy = "*"
 pyvis = "*"
 pandas = "*"
 requests = "*"
@@ -12,4 +11,4 @@ requests = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "3.8"
