@@ -15,6 +15,7 @@ import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -101,6 +102,10 @@ public class LinkCrawler {
 
     public String getNextNewLink() throws InterruptedException {
         return newLinksQueue.take();
+    }
+
+    public Queue<String> getAllNewLinks() {
+        return newLinksQueue;
     }
 
     private void processLink(String link) throws InterruptedException {
