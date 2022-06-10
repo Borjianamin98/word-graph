@@ -44,10 +44,12 @@ public class PageReader {
 
         running = true;
         this.pageReaderThread = new Thread(() -> {
+            int totalTimesWithoutAnyRecord = 0;
+
             while (running) {
                 try {
                     // Polls at most 500 pages from Kafka topic
-                    ConsumerRecords<byte[], byte[]> pageRecords = kafkaConsumer.poll(Duration.ofMinutes(5));
+                    ConsumerRecords<byte[], byte[]> pageRecords = kafkaConsumer.poll(Duration.ofMinutes(2));
                     for (ConsumerRecord<byte[], byte[]> pageRecord : pageRecords) {
                         byte[] value = pageRecord.value();
                         Page page = Page.parseFrom(value);
@@ -55,6 +57,16 @@ public class PageReader {
                         pagesQueue.put(page);
                     }
                     kafkaConsumer.commitSync();
+
+                    if (pageRecords.isEmpty()) {
+                        totalTimesWithoutAnyRecord++;
+                        if (totalTimesWithoutAnyRecord >= 2) {
+                            logger.info("No page record received in last {} time (~ more than 4 minutes) ...",
+                                    totalTimesWithoutAnyRecord);
+                        }
+                    } else {
+                        totalTimesWithoutAnyRecord = 0;
+                    }
                 } catch (InvalidProtocolBufferException e) {
                     logger.warn("Invalid protobuf record skipped.", e);
                 } catch (InterruptedException | InterruptException e) {

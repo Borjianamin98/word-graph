@@ -32,7 +32,7 @@
         <hadoop.version>2.7.7</hadoop.version>
         <parquet.protobuf.version>1.12.2</parquet.protobuf.version>
         <protobuf.java.version>3.20.0</protobuf.java.version>
-        <kafka.parquet.writer.version>2.0.0</kafka.parquet.writer.version>
+        <kafka.parquet.writer.version>2.2.0</kafka.parquet.writer.version>
         <dns.cache.manipulator.version>1.7.1</dns.cache.manipulator.version>
         <spark.version>3.2.1</spark.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>

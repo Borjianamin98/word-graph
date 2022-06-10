@@ -5,7 +5,6 @@ import ir.ac.sbu.anchor.writer.config.ApplicationConfigs;
 import ir.ac.sbu.anchor.writer.config.ApplicationConfigs.AnchorParquetWriterConfigs;
 import ir.ac.sbu.anchor.writer.config.ApplicationConfigs.HadoopConfigs;
 import ir.ac.sbu.anchor.writer.config.ApplicationConfigs.KafkaConfigs;
-import ir.ac.sbu.exception.InitializerFailureException;
 import ir.ac.sbu.model.Models.Anchor;
 import ir.sahab.kafka.reader.KafkaProtoParquetWriter;
 import java.io.IOException;
@@ -55,11 +54,7 @@ public class AnchorParquetWriter {
                 .protoClass(Anchor.class)
                 .parser(Anchor.parser())
                 .build();
-        try {
-            parquetWriter.start();
-        } catch (IOException | InterruptedException e) {
-            throw new InitializerFailureException(e);
-        }
+        parquetWriter.start();
     }
 
     @PreDestroy

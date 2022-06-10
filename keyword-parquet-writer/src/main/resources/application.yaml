@@ -4,7 +4,7 @@ app:
     kafka-consumer-group: keywords-parquet-writer
     keywords-topic-name: keywords
   keyword-parquet-writer-configs:
-    max-file-open-duration-seconds: 3600 # 1 hour
+    max-file-open-duration-seconds: 60 # TODO: Increase to 1 hour (3600)
     max-file-size-bytes: 134217728 # 128 MBytes
     target-parquet-directory: /keywords-parquet
     thread-count: 1

@@ -1,7 +1,6 @@
 package ir.ac.sbu.keyword.writer.components;
 
 import com.alibaba.dcm.DnsCacheManipulator;
-import ir.ac.sbu.exception.InitializerFailureException;
 import ir.ac.sbu.keyword.writer.config.ApplicationConfigs;
 import ir.ac.sbu.keyword.writer.config.ApplicationConfigs.HadoopConfigs;
 import ir.ac.sbu.keyword.writer.config.ApplicationConfigs.KafkaConfigs;
@@ -55,11 +54,7 @@ public class KeywordParquetWriter {
                 .protoClass(PageKeywords.class)
                 .parser(PageKeywords.parser())
                 .build();
-        try {
-            parquetWriter.start();
-        } catch (IOException | InterruptedException e) {
-            throw new InitializerFailureException(e);
-        }
+        parquetWriter.start();
     }
 
     @PreDestroy
