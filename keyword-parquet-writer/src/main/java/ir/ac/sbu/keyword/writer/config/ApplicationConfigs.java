@@ -102,6 +102,7 @@ public class ApplicationConfigs {
         public Map<String, Object> getConsumerProperties(boolean fromBeginning) {
             Map<String, Object> kafkaConsumerConfigs = new HashMap<>();
             kafkaConsumerConfigs.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+            kafkaConsumerConfigs.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, "3600000"); // One hour
             kafkaConsumerConfigs.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, fromBeginning ? "earliest" : "latest");
             kafkaConsumerConfigs.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
             kafkaConsumerConfigs

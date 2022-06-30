@@ -72,7 +72,7 @@ public class LinkCrawler {
                     processLink(link);
                 } catch (InterruptedException e) {
                     if (running) {
-                        throw new AssertionError("Unexpected interrupt while prcessing links", e);
+                        throw new AssertionError("Unexpected interrupt while processing links", e);
                     }
                     Thread.currentThread().interrupt();
                     break;
