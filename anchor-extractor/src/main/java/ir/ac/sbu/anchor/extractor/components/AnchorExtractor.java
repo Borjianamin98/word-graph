@@ -70,5 +70,6 @@ public class AnchorExtractor {
                     .setDestination(anchorLink)
                     .build());
         }
+        logger.info("Anchors of page extracted: link = {}", page.getLink());
     }
 }

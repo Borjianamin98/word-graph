@@ -2,7 +2,7 @@
 
 set -eu
 
-SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+SCRIPT_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 cd "${SCRIPT_DIR}" || exit 1
 
 if [[ "${#}" -ne 1 ]]; then
@@ -12,19 +12,7 @@ if [[ "${#}" -ne 1 ]]; then
 fi
 
 command="${1}"
-docker_compose_command="docker-compose --project-name complex_infrastructure --file docker-compose.yaml"
-
-case ${command} in
-  start)
-    ${docker_compose_command} up -d
-    ;;
-
-  stop)
-    ${docker_compose_command} down
-    ;;
-
-  *)
-    echo "Unknown command: ${command}"
-    exit 1
-    ;;
-esac
+${SCRIPT_DIR}/../scripts/run-docker-compose.sh \
+  "complex_infrastructure" \
+  "${SCRIPT_DIR}/docker-compose.yaml" \
+  "${command}"

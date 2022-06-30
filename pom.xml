@@ -34,7 +34,7 @@
         <protobuf.java.version>3.20.0</protobuf.java.version>
         <kafka.parquet.writer.version>2.2.0</kafka.parquet.writer.version>
         <dns.cache.manipulator.version>1.7.1</dns.cache.manipulator.version>
-        <spark.version>3.2.1</spark.version>
+        <spark.version>3.3.0</spark.version>
         <junit.jupiter.version>5.8.2</junit.jupiter.version>
     </properties>
 

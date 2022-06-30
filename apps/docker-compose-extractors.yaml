@@ -1,0 +1,23 @@
+version: "2"
+
+services:
+  crawler:
+    image: word-graph/crawler
+    container_name: crawler
+    hostname: crawler
+    restart: always
+    network_mode: host
+
+  anchor-extractor:
+    image: word-graph/anchor-extractor
+    container_name: anchor-extractor
+    hostname: anchor-extractor
+    restart: always
+    network_mode: host
+
+  keyword-extractor:
+    image: word-graph/keyword-extractor
+    container_name: keyword-extractor
+    hostname: keyword-extractor
+    restart: always
+    network_mode: host

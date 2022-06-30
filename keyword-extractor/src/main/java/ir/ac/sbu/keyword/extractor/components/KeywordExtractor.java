@@ -89,6 +89,7 @@ public class KeywordExtractor {
                 .setLink(page.getLink())
                 .addAllKeywords(topKeywords)
                 .build());
+        logger.info("Keywords of page extracted: link = {}", page.getLink());
     }
 
     private static boolean containsNoneOf(String content, List<String> strings) {
