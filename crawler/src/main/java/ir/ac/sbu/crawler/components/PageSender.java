@@ -67,6 +67,7 @@ public class PageSender {
 
     private void processPage(Page page) {
         kafkaProducer.send(new ProducerRecord<>(kafkaConfigs.getPagesTopicName(), page.toByteArray()));
+        logger.info("Page {} sent successfully", page.getLink());
     }
 
 }
