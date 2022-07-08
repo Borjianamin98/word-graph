@@ -36,6 +36,12 @@ Delete a Kafka topic:
 kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic <topic>
 ```
 
+Delete a Kafka consumer group:
+
+```bash
+kafka-consumer-groups.sh --bootstrap-server localhost:9092 --delete --group <group_name>
+```
+
 ## Hadoop
 
 Useful commands of `parquet-tools`:

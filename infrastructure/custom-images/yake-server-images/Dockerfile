@@ -20,7 +20,7 @@ RUN wget "${YAKE_REPO_CONTENT_BASE_URL}/requirements.txt" -O /tmp/requirements.t
 RUN pip --no-cache-dir install flasgger \
     && pip --no-cache-dir install git+${YAKE_REPO_ADDRESS}
 
-RUN wget "${YAKE_REPO_CONTENT_BASE_URL}/docker/Dockerfiles/yake-server/yake-rest-api.py" -O /opt/yake-rest-api.py
+COPY yake-rest-api.py /opt/yake-rest-api.py
 
 EXPOSE "${YAKE_REST_API_PORT}"
 

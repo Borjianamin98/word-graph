@@ -7,7 +7,7 @@ app:
   keyword-extractor-configs:
     in-memory-page-queue-size: 100
     in-memory-page-keywords-queue-size: 100
-    max-keywords-per-page: 10
+    max-keywords-per-page: 100
     minimum-page-content-size: 1500
     discarded-character-sequences:
       - "?"

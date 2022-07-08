@@ -40,7 +40,7 @@ public class KeywordExtractor {
                 try {
                     Page page = pageReader.getNextPage();
                     processPage(page);
-                } catch (InterruptedException | IOException e) {
+                } catch (InterruptedException e) {
                     if (running) {
                         throw new AssertionError("Unexpected exception while processing pages", e);
                     }
@@ -70,20 +70,27 @@ public class KeywordExtractor {
         return extractedPageKeywordsQueue.take();
     }
 
-    private void processPage(Page page) throws InterruptedException, IOException {
+    private void processPage(Page page) throws InterruptedException {
         if (page.getContent().length() < keywordExtractorConfigs.getMinimumPageContentSize()) {
             logger.info("Content of page is less than configured config (ignored): {}", page.getLink());
         }
 
         logger.info("Extract keywords of page: link = {}", page.getLink());
-        List<YakeSingleResponseDto> extractedKeywords = yakeService.getKeywords(page.getContent());
-        List<String> topKeywords = extractedKeywords.stream()
-                .filter(entry ->
-                        containsNoneOf(entry.getKeyword(), keywordExtractorConfigs.getDiscardedCharacterSequences()))
-                .sorted((o1, o2) -> Double.compare(o2.getScore(), o1.getScore())) // Reverse sort
-                .map(YakeSingleResponseDto::getKeyword)
-                .limit(keywordExtractorConfigs.getMaxKeywordsPerPage())
-                .collect(Collectors.toList());
+        List<String> topKeywords;
+        try {
+            List<YakeSingleResponseDto> extractedKeywords = yakeService.getKeywords(page.getContent());
+            topKeywords = extractedKeywords.stream()
+                    .filter(entry ->
+                            containsNoneOf(entry.getKeyword(),
+                                    keywordExtractorConfigs.getDiscardedCharacterSequences()))
+                    .sorted((o1, o2) -> Double.compare(o2.getScore(), o1.getScore())) // Reverse sort
+                    .map(YakeSingleResponseDto::getKeyword)
+                    .limit(keywordExtractorConfigs.getMaxKeywordsPerPage())
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            logger.error("Unexpected exception during extracting keywords", e);
+            throw new AssertionError("Unexpected exception during extracting keywords", e);
+        }
 
         extractedPageKeywordsQueue.put(PageKeywords.newBuilder()
                 .setLink(page.getLink())
